@@ -1,3 +1,5 @@
+package pro.sky.java.course1.hw2;
+
 import java.lang.Math;
 
 public class Main {
