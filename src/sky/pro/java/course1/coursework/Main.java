@@ -29,5 +29,30 @@ public class Main {
         System.out.println("--");
         System.out.println("Список имен сотрудников:");
         Employee.printNames(employees);
+        System.out.println("--");
+        int departmentID = 2;
+        Employee.indexSalaries(employees, -15, departmentID);
+        System.out.printf("Список сотрудников отдела №%d:\n", departmentID);
+        Employee.printArray(employees, departmentID);
+        System.out.println("--");
+        System.out.printf("Сотрудник с минимальной зарплатой в отделе №%d:\n", departmentID);
+        System.out.println(Employee.findEmployeeWithMinSalary(employees, departmentID).toStringWithoutDepartment());
+        System.out.println("--");
+        System.out.printf("Сотрудник с максимальной зарплатой в отделе №%d:\n", departmentID);
+        System.out.println(Employee.findEmployeeWithMaxSalary(employees, departmentID).toStringWithoutDepartment());
+        System.out.println("--");
+        System.out.printf("Общие затраты на заработную плату сотрудников в отделе №%d: %.2f рублей\n", departmentID, Employee.sumSalaries(employees, departmentID));
+        System.out.println("--");
+        System.out.printf("Средняя зарплата сотрудников в отделе №%d составляет %.2f рублей\n", departmentID, Employee.getAverageSalary(employees, departmentID));
+        System.out.println("--");
+        System.out.println("Список всех сотрудников:");
+        Employee.printArray(employees);
+        System.out.println("--");
+        double threshold = 27000;
+        System.out.printf("Сотрудники с зарплатой меньшей %.2f рублей:\n", threshold);
+        Employee.findEmployeesWithSalaryLessThan(employees, threshold);
+        System.out.println("--");
+        System.out.printf("Сотрудники с зарплатой большей или равной %.2f рублей:\n", threshold);
+        Employee.findEmployeesWithSalaryMoreThan(employees, threshold);
     }
 }
