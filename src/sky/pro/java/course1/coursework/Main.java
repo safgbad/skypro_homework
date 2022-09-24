@@ -1,8 +1,10 @@
 package sky.pro.java.course1.coursework;
 
 public class Main {
+    private static Employee[] employees;
+
     public static void main(String[] args) {
-        Employee[] employees = new Employee[] {new Employee("Иванов Иван Иванович", 4, 25743.21),
+        employees = new Employee[] {new Employee("Иванов Иван Иванович", 4, 25743.21),
                 new Employee("Александров Александр Александрович", 1, 37293.53),
                 new Employee("Петров Петр Петрович", 4, 21482.48),
                 new Employee("Сергеев Сергей Сергеевич", 2, 35294.28),
