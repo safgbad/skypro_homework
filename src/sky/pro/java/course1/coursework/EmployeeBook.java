@@ -35,6 +35,10 @@ public class EmployeeBook {
         return new EmployeeBook(Arrays.stream(employees).filter(x -> (x != null) && (x.getDepartmentID() == departmentID)).toArray(Employee[]::new));
     }
 
+    private EmployeeBook filterByDepartment(Department department) {
+        return new EmployeeBook(Arrays.stream(employees).filter(x -> (x != null) && (x.getDepartment() == department)).toArray(Employee[]::new));
+    }
+
     public void printArray() {
         for (var employee : employees) {
             if (employee != null)
@@ -48,6 +52,12 @@ public class EmployeeBook {
         }
     }
 
+    public void printArray(Department department) {
+        for (Employee employee : this.filterByDepartment(department).employees) {
+            System.out.println(employee.toStringWithoutDepartment());
+        }
+    }
+
     public void printNames() {
         for (Employee employee : employees) {
             if (employee != null)
@@ -57,6 +67,10 @@ public class EmployeeBook {
 
     public void printNames(int departmentID) {
         this.filterByDepartment(departmentID).printNames();
+    }
+
+    public void printNames(Department department) {
+        this.filterByDepartment(department).printNames();
     }
 
     public void printArrayCategorizedByDepartmentID() {
@@ -78,6 +92,10 @@ public class EmployeeBook {
         return this.filterByDepartment(departmentID).sumSalaries();
     }
 
+    public double sumSalaries(Department department) {
+        return this.filterByDepartment(department).sumSalaries();
+    }
+
     public double getAverageSalary() {
         if (numberOfEmployees == 0)
             return 0;
@@ -87,6 +105,10 @@ public class EmployeeBook {
 
     public double getAverageSalary(int departmentID) {
         return this.filterByDepartment(departmentID).getAverageSalary();
+    }
+
+    public double getAverageSalary(Department department) {
+        return this.filterByDepartment(department).getAverageSalary();
     }
 
     public Employee findEmployeeWithMinSalary() {
@@ -106,6 +128,10 @@ public class EmployeeBook {
         return this.filterByDepartment(departmentID).findEmployeeWithMinSalary();
     }
 
+    public Employee findEmployeeWithMinSalary(Department department) {
+        return this.filterByDepartment(department).findEmployeeWithMinSalary();
+    }
+
     public Employee findEmployeeWithMaxSalary() {
         if (employees.length > 0) {
             Employee result = employees[0];
@@ -121,6 +147,10 @@ public class EmployeeBook {
 
     public Employee findEmployeeWithMaxSalary(int departmentID) {
         return this.filterByDepartment(departmentID).findEmployeeWithMaxSalary();
+    }
+
+    public Employee findEmployeeWithMaxSalary(Department department) {
+        return this.filterByDepartment(department).findEmployeeWithMaxSalary();
     }
 
     public void findEmployeesWithSalaryLessThan(double threshold) {
@@ -141,6 +171,17 @@ public class EmployeeBook {
         for (int i = 0; i < employees.length; i++) {
             if (employees[i] == null) {
                 employees[i] = new Employee(fullName, departmentID, salary);
+                numberOfEmployees++;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean addEmployee(String fullName, Department department, double salary) {
+        for (int i = 0; i < employees.length; i++) {
+            if (employees[i] == null) {
+                employees[i] = new Employee(fullName, department, salary);
                 numberOfEmployees++;
                 return true;
             }
@@ -191,9 +232,18 @@ public class EmployeeBook {
         }
     }
 
-    public boolean setDepartmentID(String fullName, int departmentID) {
+    public boolean setDepartment(String fullName, int departmentID) {
         try {
             employees[getIndex(fullName)].setDepartmentID(departmentID);
+            return true;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return false;
+        }
+    }
+
+    public boolean setDepartment(String fullName, Department department) {
+        try {
+            employees[getIndex(fullName)].setDepartment(department);
             return true;
         } catch (ArrayIndexOutOfBoundsException e) {
             return false;
@@ -210,5 +260,9 @@ public class EmployeeBook {
 
     public void indexSalaries(double rate, int departmentID) {
         this.filterByDepartment(departmentID).indexSalaries(rate);
+    }
+
+    public void indexSalaries(double rate, Department department) {
+        this.filterByDepartment(department).indexSalaries(rate);
     }
 }

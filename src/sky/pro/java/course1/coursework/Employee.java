@@ -5,7 +5,7 @@ public class Employee {
 
     private final int id;
     private final String fullName;
-    private int departmentID;
+    private Department department;
     private double salary;
 
     public int getID() {
@@ -17,7 +17,11 @@ public class Employee {
     }
 
     public int getDepartmentID() {
-        return departmentID;
+        return department.getDepartmentID();
+    }
+
+    public Department getDepartment() {
+        return department;
     }
 
     public double getSalary() {
@@ -25,7 +29,11 @@ public class Employee {
     }
 
     public void setDepartmentID(int departmentID) {
-        this.departmentID = departmentID;
+        this.department = Department.getDepartmentByID(departmentID);
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
     }
 
     public void setSalary(double salary) {
@@ -35,12 +43,19 @@ public class Employee {
     public Employee(String fullName, int departmentID, double salary) {
         id = employeesCounter++;
         this.fullName = fullName;
-        this.departmentID = departmentID;
+        this.department = Department.getDepartmentByID(departmentID);
+        this.salary = salary;
+    }
+
+    public Employee(String fullName, Department department, double salary) {
+        id = employeesCounter++;
+        this.fullName = fullName;
+        this.department = department;
         this.salary = salary;
     }
 
     public String toString() {
-        return String.format("ID: %d; ФИО: %s; ID отдела: %d; Зарплата: %.2f", id, fullName, departmentID, salary);
+        return String.format("ID: %d; ФИО: %s; ID отдела: %d; Зарплата: %.2f", id, fullName, department.getDepartmentID(), salary);
     }
 
     public String toStringWithoutDepartment() {
