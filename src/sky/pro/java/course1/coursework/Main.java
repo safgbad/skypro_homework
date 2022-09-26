@@ -73,6 +73,7 @@ public class Main {
                 employees.setDepartment("Максимов Максим Максимович", Department.SECOND_DEPARTMENT)) {
             employees.printArray();
         }
+        System.out.println("--");
         employees.printArrayCategorizedByDepartmentID();
     }
 }

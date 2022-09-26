@@ -54,11 +54,18 @@ public class Employee {
         this.salary = salary;
     }
 
+    public Employee(double salary) {
+        id = -1;
+        fullName = "";
+        department = null;
+        this.salary = salary;
+    }
+
     public String toString() {
-        return String.format("ID: %d; ФИО: %s; ID отдела: %d; Зарплата: %.2f", id, fullName, department.getDepartmentID(), salary);
+        return String.format("ID: %4d; ФИО: %50s; ID отдела: %2d; Зарплата: %10.2f", id, fullName, department.getDepartmentID(), salary);
     }
 
     public String toStringWithoutDepartment() {
-        return String.format("ID: %d; ФИО: %s; Зарплата: %.2f", id, fullName, salary);
+        return String.format("ID: %4d; ФИО: %50s; Зарплата: %10.2f", id, fullName, salary);
     }
 }
