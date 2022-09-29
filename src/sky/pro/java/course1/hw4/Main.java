@@ -7,6 +7,8 @@ public class Main {
         task3(2024);
         task4(100);
         task5(9);
+        task6(23, 80000);
+        task7(35, 82000, 450000);
     }
 
     // Task 1
@@ -77,6 +79,34 @@ public class Main {
             default:
                 System.out.println("Некорректный номер месяца");
         }
+        System.out.println("--");
+    }
+
+    // Task 6
+    public static void task6(int age, double salary) {
+        double limit = age >= 23 ? 3 * salary : 2 * salary;
+        if (salary >= 80000)
+            limit *= 1.5;
+        else if (salary >= 50000)
+            limit *= 1.2;
+        System.out.printf("Мы готовы выдать вам кредитную карту с лимитом %.2f рублей\n", limit);
+        System.out.println("--");
+    }
+
+    // Task 7
+    public static void task7(int age, double salary, double wantedSum) {
+        double rate = salary > 80000 ? 9.3 : 10;
+        if (age < 23)
+            rate += 1;
+        else if (age < 30)
+            rate += 0.5;
+        double maxLoanPayment = salary / 2;
+        double regularLoanPayment = wantedSum * (1 + rate / 100) / 12;
+        System.out.printf("Максимальный платеж при зарплате %.2f рублей равен %.2f рублей. Платеж по кредиту: %.2f рублей. ", salary, maxLoanPayment, regularLoanPayment);
+        if (maxLoanPayment < regularLoanPayment)
+            System.out.println("Отказано");
+        else
+            System.out.println("Одобрено");
         System.out.println("--");
     }
 }
