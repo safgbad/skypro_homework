@@ -15,6 +15,8 @@ public class Main {
         task2_4(firstFriday);
         task3_1();
         task3_2();
+        task4_1();
+        task4_2();
     }
 
     // Task 1.1
@@ -133,5 +135,35 @@ public class Main {
             System.out.printf("2*%d=%d\n", i, 2 * i);
         }
         System.out.println("--");
+    }
+
+    // Task 4.1
+    public static void task4_1() {
+        System.out.println("Task 4.1");
+        for (int i = 1; i <= 30; i++) {
+            System.out.printf("%d. ", i);
+            if (i % 3 == 0)
+                System.out.print("ping ");
+            if (i % 5 == 0)
+                System.out.print("pong");
+            System.out.println();
+        }
+        System.out.println("--");
+    }
+
+    // Task 4.2
+    public static void task4_2() {
+        System.out.println("Task 4.2");
+        int prevPrev = 0;
+        int prev = 1;
+        int curr;
+        System.out.printf("%d %d ", prevPrev, prev);
+        for (int i = 0; i < 8; i++) {
+            curr = prevPrev + prev;
+            System.out.printf("%d ", curr);
+            prevPrev = prev;
+            prev = curr;
+        }
+        System.out.println("\n--");
     }
 }
