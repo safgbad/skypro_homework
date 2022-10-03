@@ -48,18 +48,16 @@ public class Main {
     // Task 2.1
     public static void task2_1() {
         System.out.println("Task 2.1");
-        int numberOfLeapYears = (2096 - 1904) / 4 + 1;
-        for (int i = 0; i < numberOfLeapYears; i++)
-            System.out.printf("%d ", 1904 + i * 4);
+        for (int i = 1904; i <= 2096; i += 4)
+            System.out.printf("%d ", i);
         System.out.print("\n--\n");
     }
 
     // Task 2.2
     public static void task2_2() {
         System.out.println("Task 2.2");
-        int numberOfNumbersToPrint = (98 - 7) / 7 + 1; /* )) */
-        for (int i = 0; i < numberOfNumbersToPrint; i++)
-            System.out.printf("%d ", 7 + i * 7);
+        for (int i = 7; i <= 98; i++)
+            System.out.printf("%d ", i);
         System.out.print("\n--\n");
     }
 
