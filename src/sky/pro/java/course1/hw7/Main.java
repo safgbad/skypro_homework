@@ -17,10 +17,56 @@ class crossMethodStruct {
 
 public class Main {
     public static void main(String[] args) {
-        // Я прошу прощения у человека, который будет это проверять (если эта домашка, конечно же, подлежит проверке)
+        // Task 1
+        int[] integerArray = new int[3];
+        integerArray[0] = 1;
+        integerArray[1] = 2;
+        integerArray[2] = 3;
+        double[] doubleArray = {1.57, 7.654, 9.986};
+        String[] stringArray = new String[] {"a o a", "synchrophasotron", "RAID Shadow Legends"};
+
+        // Task 2
+        int integerArray_length = integerArray.length;
+        for (int i = 0; i < integerArray_length - 1; i++)
+            System.out.printf("%d, ", integerArray[i]);
+        System.out.printf("%d\n", integerArray[integerArray_length - 1]);
+        int doubleArray_length = doubleArray.length;
+        for (int i = 0; i < doubleArray_length - 1; i++)
+            System.out.printf("%f, ", doubleArray[i]);
+        System.out.printf("%f\n", doubleArray[doubleArray_length - 1]);
+        int stringArray_length = stringArray.length;
+        for (int i = 0; i < stringArray_length - 1; i++)
+            System.out.printf("%s, ", stringArray[i]);
+        System.out.printf("%s\n", stringArray[stringArray_length - 1]);
+        System.out.println("--");
+
+        // Task 3
+        for (int i = integerArray_length - 1; i > 0; i--)
+            System.out.printf("%d, ", integerArray[i]);
+        System.out.printf("%d\n", integerArray[0]);
+        for (int i = doubleArray_length - 1; i > 0; i--)
+            System.out.printf("%f, ", doubleArray[i]);
+        System.out.printf("%f\n", doubleArray[0]);
+        for (int i = stringArray_length - 1; i > 0; i--)
+            System.out.printf("%s, ", stringArray[i]);
+        System.out.printf("%s\n", stringArray[0]);
+        System.out.println("--");
+
+        // Task 4
+        System.out.println("Task 4");
+        for (int i = 0; i < integerArray_length; i++) {
+            if (integerArray[i] % 2 == 1)
+                integerArray[i]++;
+        }
+        for (int i = 0; i < integerArray_length - 1; i++)
+            System.out.printf("%d, ", integerArray[i]);
+        System.out.printf("%d\n", integerArray[integerArray_length - 1]);
+
+        /* В принципе это не имеет значения... Там то же самое +-, но с массивом ArrayList'ов
         task2(task1(args));
         task3(task1(args));
         task4(task1(args));
+         */
     }
 
     // Task 1
