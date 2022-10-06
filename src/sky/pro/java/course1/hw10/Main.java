@@ -23,6 +23,12 @@ public class Main {
         int deliveryDistance = 21;
         System.out.printf("При расстоянии %d км для доставки потребуется дней: %d\n", deliveryDistance, calculateDeliveryPeriod(deliveryDistance));
         System.out.println("--");
+
+        // Task 4
+        System.out.println("Task 4");
+        int[] ledger = generateRandomArray(30, 100_00, 200_000);
+        System.out.printf("Средняя сумма трат за месяц составила %.2f рублей\n", getAverage(ledger));
+        System.out.println("--");
     }
 
     public static boolean isLeap(int year) {
@@ -52,5 +58,24 @@ public class Main {
         int oneDayZoneDistance = 20;
         int raisingDistance = 40;
         return deliveryDistance <= oneDayZoneDistance ? 1 : 2 + (deliveryDistance - oneDayZoneDistance - 1) / raisingDistance;
+    }
+
+    public static int[] generateRandomArray(int length, int min, int max) {
+        java.util.Random random = new java.util.Random();
+        int[] array = new int[length];
+        for (int i = 0; i < array.length; i++)
+            array[i] = random.nextInt(min) + max - min;
+        return array;
+    }
+
+    public static int getSum(int[] array) {
+        int sum = 0;
+        for (int number : array)
+            sum += number;
+        return sum;
+    }
+
+    public static double getAverage(int[] array) {
+        return array.length == 0 ? 0 : (double) getSum(array) / array.length;
     }
 }
