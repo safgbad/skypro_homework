@@ -1,4 +1,4 @@
-package pro.sky.java.course1.hw1;
+package sky.pro.java.course1.hw1;
 
 public class Main {
     public static void main(String[] args) {

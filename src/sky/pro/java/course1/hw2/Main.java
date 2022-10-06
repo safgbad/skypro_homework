@@ -1,4 +1,4 @@
-package pro.sky.java.course1.hw2;
+package sky.pro.java.course1.hw2;
 
 import java.lang.Math;
 
