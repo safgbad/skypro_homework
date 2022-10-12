@@ -23,7 +23,7 @@ public class Main {
 
         // Task 4
         System.out.println("Task 4");
-        char[] reverseFullName = { 'n', 'a', 'v', 'I', ' ', 'v', 'o', 'n', 'a', 'v', 'I'};
+        char[] reverseFullName = {'n', 'a', 'v', 'I', ' ', 'v', 'o', 'n', 'a', 'v', 'I'};
         flipFullName(reverseFullName);
         System.out.println("--");
 
@@ -39,8 +39,9 @@ public class Main {
         int[][] matrix = new int[3][3];
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                if ((i == j) || (i + j == 2))
+                if ((i == j) || (i + j == 2)) {
                     matrix[i][j] = 1;
+                }
             }
         }
         for (int[] row : matrix) {
@@ -53,7 +54,7 @@ public class Main {
 
         // Task 6
         System.out.println("Task 6");
-        int[] array = {5, 4, 3, 2 ,1};
+        int[] array = {5, 4, 3, 2, 1};
         System.out.println(Arrays.toString(array));
         System.out.println(Arrays.toString(flipIntArray(array)));
         System.out.println("--");
@@ -80,21 +81,24 @@ public class Main {
     public static int[] generateRandomArray() {
         java.util.Random random = new java.util.Random();
         int[] arr = new int[30];
-        for (int i = 0; i < arr.length; i++)
+        for (int i = 0; i < arr.length; i++) {
             arr[i] = random.nextInt(100_000) + 100_000;
+        }
         return arr;
     }
 
     public static void flipFullName(char[] reverseFullName) {
-        for (int i = reverseFullName.length - 1; i >= 0; i--)
+        for (int i = reverseFullName.length - 1; i >= 0; i--) {
             System.out.print(reverseFullName[i]);
+        }
         System.out.println();
     }
 
     public static int getSum(int[] array) {
         int sum = 0;
-        for (int number : array)
+        for (int number : array) {
             sum += number;
+        }
         return sum;
     }
 
@@ -105,8 +109,9 @@ public class Main {
     public static int getMin(int[] array) {
         int min = Integer.MAX_VALUE;
         for (int number : array) {
-            if (min > number)
+            if (min > number) {
                 min = number;
+            }
         }
         return min;
     }
@@ -114,16 +119,18 @@ public class Main {
     public static int getMax(int[] array) {
         int max = Integer.MIN_VALUE;
         for (int number : array) {
-            if (max < number)
+            if (max < number) {
                 max = number;
+            }
         }
         return max;
     }
 
     public static int[] flipIntArray(int[] array) {
         int[] rightVersionOfArray = new int[array.length];
-        for (int i = 0; i < array.length; i++)
+        for (int i = 0; i < array.length; i++) {
             rightVersionOfArray[i] = array[array.length - i - 1];
+        }
         return rightVersionOfArray;
     }
 
@@ -148,14 +155,15 @@ public class Main {
             if (temp == neededSum) {
                 System.out.printf("%d and %d\n", array[leftPointer], array[rightPointer]);
                 isFound = true;
-            }
-            else if (temp < neededSum)
+            } else if (temp < neededSum) {
                 leftPointer++;
-            else
+            } else {
                 rightPointer--;
+            }
         }
-        if (!isFound)
+        if (!isFound) {
             System.out.printf("There is no pair of integers in this array, that give %d in total\n", neededSum);
+        }
     }
 
     public static void findAllPairsInArrayThatGivesNumberInTotal(int[] array, int neededSum) {
@@ -170,13 +178,14 @@ public class Main {
                 System.out.printf("%d and %d\n", array[leftPointer], array[rightPointer]);
                 isFound = true;
                 leftPointer++;
-            }
-            else if (temp < neededSum)
+            } else if (temp < neededSum) {
                 leftPointer++;
-            else
+            } else {
                 rightPointer--;
+            }
         }
-        if (!isFound)
+        if (!isFound) {
             System.out.printf("There is no pair of integers in this array, that give %d in total\n", neededSum);
+        }
     }
 }
