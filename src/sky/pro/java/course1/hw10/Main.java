@@ -7,10 +7,11 @@ public class Main {
         // Task 1
         System.out.println("Task 1");
         int year = 2022;
-        if (isLeap(year))
+        if (isLeap(year)) {
             System.out.printf("%d год – високосный\n", year);
-        else
+        } else {
             System.out.printf("%d год – не високосный\n", year);
+        }
         System.out.println("--");
 
         // Task 2
@@ -49,8 +50,9 @@ public class Main {
                 return;
         }
         String lite = "";
-        if (clientDeviceYear < LocalDate.now().getYear())
+        if (clientDeviceYear < LocalDate.now().getYear()) {
             lite = "облегченную ";
+        }
         System.out.printf("Установите %sверсию приложения для %s по ссылке\n", lite, operatingSystem);
     }
 
@@ -63,15 +65,17 @@ public class Main {
     public static int[] generateRandomArray(int length, int min, int max) {
         java.util.Random random = new java.util.Random();
         int[] array = new int[length];
-        for (int i = 0; i < array.length; i++)
+        for (int i = 0; i < array.length; i++) {
             array[i] = random.nextInt(min) + max - min;
+        }
         return array;
     }
 
     public static int getSum(int[] array) {
         int sum = 0;
-        for (int number : array)
+        for (int number : array) {
             sum += number;
+        }
         return sum;
     }
 
