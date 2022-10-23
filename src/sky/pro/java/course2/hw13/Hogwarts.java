@@ -1,6 +1,6 @@
 package sky.pro.java.course2.hw13;
 
-abstract class Hogwarts {
+class Hogwarts {
     private final String NAME;
     private final int WIZARDRY;
     private final int TRANSGRESSION_DISTANCE;
@@ -9,6 +9,10 @@ abstract class Hogwarts {
         NAME = name;
         WIZARDRY = wizardry;
         TRANSGRESSION_DISTANCE = transgressionDistance;
+    }
+
+    public String getName() {
+        return NAME;
     }
 
     @Override
@@ -35,31 +39,6 @@ abstract class Hogwarts {
                 loser = pupil2.NAME;
             }
             System.out.printf("%s лучше по сумме основных качеств ученика Хогвартса чем %s\n", winner, loser);
-        }
-    }
-
-    abstract int getSumOfLocalQualities();
-    abstract String getFacultyBelonging();
-
-    public static void compareLocalQualities(Hogwarts pupil1, Hogwarts pupil2) {
-        if (!pupil1.getClass().equals(pupil2.getClass())) {
-            throw new IllegalArgumentException("Для сравнения ученики должны быть с одного факультета");
-        } else {
-            int sum1 = pupil1.getSumOfLocalQualities();
-            int sum2 = pupil2.getSumOfLocalQualities();
-            if (sum1 == sum2) {
-                System.out.printf("%s и %s наравне как ученики одного факультета\n", pupil1.NAME, pupil2.NAME);
-            } else {
-                String winner, loser;
-                if (sum1 < sum2) {
-                    winner = pupil2.NAME;
-                    loser = pupil1.NAME;
-                } else {
-                    winner = pupil1.NAME;
-                    loser = pupil2.NAME;
-                }
-                System.out.printf("%s лучший %s чем %s\n", winner, pupil1.getFacultyBelonging(), loser);
-            }
         }
     }
 }

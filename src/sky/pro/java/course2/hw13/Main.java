@@ -28,8 +28,7 @@ public class Main {
         System.out.println(gryffindor[0]);
 
         Hogwarts.compareBasicQualities(ravenclaw[1], hufflepuff[2]);
-        Hogwarts.compareLocalQualities(gryffindor[0], gryffindor[1]);
-        Hogwarts.compareLocalQualities(gryffindor[0], hufflepuff[1]);
+        Gryffindor.compareLocalQualities(gryffindor[0], gryffindor[1]);
     }
 
     public static int random() {

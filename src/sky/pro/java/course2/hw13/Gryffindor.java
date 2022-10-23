@@ -1,6 +1,6 @@
 package sky.pro.java.course2.hw13;
 
-public class Gryffindor extends Hogwarts{
+public class Gryffindor extends Hogwarts {
     private final int NOBILITY;
     private final int HONOUR;
     private final int BRAVERY;
@@ -17,11 +17,27 @@ public class Gryffindor extends Hogwarts{
         return String.format("%sБлагородство: %d/100\nЧесть: %d/100\nХрабрость: %d/100\n----------\n", super.toString(), NOBILITY, HONOUR, BRAVERY);
     }
 
-    int getSumOfLocalQualities() {
+    private int getSumOfLocalQualities() {
         return NOBILITY + HONOUR + BRAVERY;
     }
 
-    String getFacultyBelonging() {
-        return "гриффиндорец";
+    public static void compareLocalQualities(Gryffindor pupil1, Gryffindor pupil2) {
+        int sum1 = pupil1.getSumOfLocalQualities();
+        int sum2 = pupil2.getSumOfLocalQualities();
+        String name1 = pupil1.getName();
+        String name2 = pupil2.getName();
+        if (sum1 == sum2) {
+            System.out.printf("%s и %s наравне как ученики одного факультета\n", name1, name2);
+        } else {
+            String winner, loser;
+            if (sum1 < sum2) {
+                winner = name2;
+                loser = name1;
+            } else {
+                winner = name1;
+                loser = name2;
+            }
+            System.out.printf("%s лучший гриффиндорец чем %s\n", winner, loser);
+        }
     }
 }
