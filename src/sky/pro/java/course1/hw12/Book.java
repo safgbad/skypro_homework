@@ -3,22 +3,22 @@ package sky.pro.java.course1.hw12;
 import java.util.Objects;
 
 public class Book {
-    private String name;
-    private Author author;
+    private final String NAME;
+    private final Author AUTHOR;
     private int year;
 
     public Book(String name, Author author, int year) {
-        this.name = name;
-        this.author = author;
+        this.NAME = name;
+        this.AUTHOR = author;
         this.year = year;
     }
 
     public String getName() {
-        return name;
+        return NAME;
     }
 
     public Author getAuthor() {
-        return author;
+        return AUTHOR;
     }
 
     public int getYear() {
@@ -31,7 +31,7 @@ public class Book {
 
     @Override
     public String toString() {
-        return String.format("[Book] {%s: \"%s\", %d}", this.getAuthor(), name, year);
+        return String.format("[Book] {%s: \"%s\", %d}", AUTHOR, NAME, year);
     }
 
     @Override
@@ -39,11 +39,11 @@ public class Book {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Book book = (Book) o;
-        return year == book.year && name.equals(book.name) && author.equals(book.author);
+        return year == book.year && NAME.equals(book.NAME) && AUTHOR.equals(book.AUTHOR);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, author, year);
+        return Objects.hash(NAME, AUTHOR, year);
     }
 }

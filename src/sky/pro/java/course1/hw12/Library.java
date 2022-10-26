@@ -1,16 +1,16 @@
 package sky.pro.java.course1.hw12;
 
 public class Library {
-    private Book[] bookArray;
+    private final Book[] BOOK_ARRAY;
 
     public Library(int size) {
-        bookArray = new Book[size];
+        BOOK_ARRAY = new Book[size];
     }
 
     public boolean addBook(Book book) {
-        for (int i = 0; i < bookArray.length; i++) {
-            if (bookArray[i] == null) {
-                bookArray[i] = book;
+        for (int i = 0; i < BOOK_ARRAY.length; i++) {
+            if (BOOK_ARRAY[i] == null) {
+                BOOK_ARRAY[i] = book;
                 return true;
             }
         }
@@ -18,15 +18,15 @@ public class Library {
     }
 
     public void printBooks() {
-        for (Book book : bookArray) {
+        for (Book book : BOOK_ARRAY) {
             if (book != null)
                 System.out.println(book);
         }
     }
 
     private int indexOf(String name) {
-        for (int i = 0; i < bookArray.length; i++) {
-            if ((bookArray[i] != null) && (bookArray[i].getName().equalsIgnoreCase(name)))
+        for (int i = 0; i < BOOK_ARRAY.length; i++) {
+            if ((BOOK_ARRAY[i] != null) && (BOOK_ARRAY[i].getName().equalsIgnoreCase(name)))
                 return i;
         }
         return -1;
@@ -37,9 +37,9 @@ public class Library {
         if (index == -1)
             System.out.printf("The %s hasn't found in library\n", name);
         else {
-            System.out.printf("%s by %s %s was published in %d\n", bookArray[index].getName(),
-                    bookArray[index].getAuthor().getFirstName(), bookArray[index].getAuthor().getLastName(),
-                    bookArray[index].getYear());
+            System.out.printf("%s by %s %s was published in %d\n", BOOK_ARRAY[index].getName(),
+                    BOOK_ARRAY[index].getAuthor().getFirstName(), BOOK_ARRAY[index].getAuthor().getLastName(),
+                    BOOK_ARRAY[index].getYear());
         }
     }
 
@@ -48,7 +48,7 @@ public class Library {
         if (index == -1)
             return false;
         else
-            bookArray[index].setYear(year);
+            BOOK_ARRAY[index].setYear(year);
         return true;
     }
 
@@ -56,7 +56,7 @@ public class Library {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Library:");
-        for (Book book : bookArray) {
+        for (Book book : BOOK_ARRAY) {
             if (book != null)
                 stringBuilder.append("\n").append(book);
         }
