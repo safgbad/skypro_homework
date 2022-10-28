@@ -8,17 +8,15 @@ public class Main {
     }
 
     public static String deleteDuplicatesAndUniteToOneString(String[] stringArray) {
-        for (int i = 0; i < stringArray.length; i++) {
-            for (int j = i + 1; j < stringArray.length; j++) {
-                if (stringArray[i] != null && stringArray[i].equals(stringArray[j])) {
-                    stringArray[j] = null;
-                }
-            }
-        }
         StringBuilder stringBuilder = new StringBuilder();
-        for (String str : stringArray) {
-            if (str != null) {
-                stringBuilder.append(str);
+        for (int i = 0; i < stringArray.length; i++) {
+            if (stringArray[i] != null) {
+                for (int j = i + 1; j < stringArray.length; j++) {
+                    if (stringArray[i].equals(stringArray[j])) {
+                        stringArray[j] = null;
+                    }
+                }
+                stringBuilder.append(stringArray[i]);
             }
         }
         return stringBuilder.toString();
