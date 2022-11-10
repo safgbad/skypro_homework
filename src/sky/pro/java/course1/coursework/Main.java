@@ -1,10 +1,8 @@
 package sky.pro.java.course1.coursework;
 
 public class Main {
-    private static EmployeeBook employees;
-
     public static void main(String[] args) {
-        employees = new EmployeeBook(new Employee[] {new Employee("Иванов Иван Иванович", Department.FORTH_DEPARTMENT, 25743.21),
+        EmployeeBook employees = new EmployeeBook(new Employee[] {new Employee("Иванов Иван Иванович", Department.FORTH_DEPARTMENT, 25743.21),
                 new Employee("Александров Александр Александрович", Department.FIRST_DEPARTMENT, 37293.53),
                 new Employee("Петров Петр Петрович", Department.FORTH_DEPARTMENT, 21482.48),
                 new Employee("Сергеев Сергей Сергеевич", Department.SECOND_DEPARTMENT, 35294.28),
@@ -63,10 +61,9 @@ public class Main {
         }
         System.out.println("--");
         System.out.println("Список сотрудников после добавления:");
-        if (employees.addEmployee("Максимов Максим Максимович", Department.FORTH_DEPARTMENT, 28574.59) &&
-                employees.addEmployee("Константинов Константин Константинович", Department.FIRST_DEPARTMENT, 37234.38)) {
-            employees.printArray();
-        }
+        employees.addEmployee("Максимов Максим Максимович", Department.FORTH_DEPARTMENT, 28574.59);
+        employees.addEmployee("Константинов Константин Константинович", Department.FIRST_DEPARTMENT, 37234.38);
+        employees.printArray();
         System.out.println("--");
         System.out.println("Переместим Максимова Максима Максимовича в другой отдел и повысим ему зарплату:");
         if (employees.setSalary("Максимов Максим Максимович", 30000.00) &&
