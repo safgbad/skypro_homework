@@ -11,15 +11,17 @@ public class Car {
     private String country = DEFAULT;
 
     public Car(String brand, String model, double engineVolume, String color, int year, String country) {
-        this.brand = Main.checkIfBlankAndReturn(brand, this.brand);
-        this.model = Main.checkIfBlankAndReturn(model, this.model);
-        this.engineVolume = engineVolume > 0 ? engineVolume : this.engineVolume;
-        this.color = Main.checkIfBlankAndReturn(color, this.color);
-        this.year = year > 0 ? year : this.year;
-        this.country = Main.checkIfBlankAndReturn(country, this.country);
+        if (!isNullOrBlank(brand)) this.brand = brand;
+        if (!isNullOrBlank(model)) this.model = model;
+        if (engineVolume > 0) this.engineVolume = engineVolume;
+        if (!isNullOrBlank(color)) this.color = color;
+        if (year > 0) this.year = year;
+        if (!isNullOrBlank(country)) this.country = country;
     }
 
-
+    private boolean isNullOrBlank(String str) {
+        return str == null || str.isBlank();
+    }
 
     @Override
     public String toString() {

@@ -2,28 +2,17 @@ package sky.pro.java.course2.hw13;
 
 public class Main {
     public static void main(String[] args) {
-        // С Вашего позволения не буду делать вариант с прямым доступом и дефолтными полями
-        // Task 1.1
-        System.out.println("Task 1.1");
-        Human maxim = new Human(1988, "Максим", "Минск");
-        Human anya = new Human(1993, "Аня", "Москва");
-        Human katya = new Human(1992, "Катя", "Калининград");
-        Human artem = new Human(1995, "Артем", "Москва");
-        Human[] humans = new Human[] {maxim, anya, katya, artem};
+        System.out.println("Humans:");
+        Human maxim = new Human(1988, "Максим", "Минск", "бренд-менеджер");
+        Human anya = new Human(1993, "Аня", "Москва", "методист образовательных программ");
+        Human katya = new Human(1992, "Катя", "Калининград", "продакт-менеджер");
+        Human artem = new Human(1995, "Артем", "Москва", "директор по развитию бизнеса");
+        Human vladimir = new Human(2001, "Владимир", "Казань");
+        Human[] humans = new Human[] {maxim, anya, katya, artem, vladimir};
         printObjects(humans);
         System.out.println("--");
 
-        // Task 1.2 (2.1)
-        System.out.println("Task 1.2 (2.1)");
-        maxim.setJobTitle("бренд-менеджер");
-        anya.setJobTitle("методист образовательных программ");
-        katya.setJobTitle("продакт-менеджер");
-        artem.setJobTitle("директор по развитию бизнеса");
-        printObjects(humans);
-        System.out.println("--");
-
-        // Task 1.3 (2.2)
-        System.out.println("Task 1.3 (2.2)");
+        System.out.println("Cars:");
         Car lada = new Car("Lada", "Granta", 1.7, "желтый", 2015, "Россия");
         Car audi = new Car("Audi", "A8 50 L TDI quattro", 3, "черный", 2020, "Германия");
         Car bmw = new Car("BMW", "Z8", 3, "черный", 2021, "Германия");
@@ -32,15 +21,27 @@ public class Main {
         Car[] cars = new Car[] {lada, audi, bmw, kia, hyundai};
         printObjects(cars);
         System.out.println("--");
+
+        System.out.println("Flowers:");
+        Flower rose = new Flower("Роза обыкновенная", null, "Нидерланды", 35.59);
+        Flower chrysanthemum = new Flower("Хризантема", null, null, 15, 5);
+        Flower peony = new Flower("Пион", null, "Великобритания", 69.9, 1);
+        Flower gypsophila = new Flower("Гипсофила", null, "Турция", 19.5, 10);
+        Flower[] flowers = new Flower[] {rose, chrysanthemum, peony, gypsophila};
+        printObjects(flowers);
+        System.out.println("--");
+
+        System.out.println("Bouquet:");
+        Bouquet bouquet = new Bouquet();
+        bouquet.addFlower(rose, 3);
+        bouquet.addFlower(chrysanthemum, 5);
+        bouquet.addFlower(gypsophila);
+        System.out.println(bouquet);
     }
 
     public static void printObjects(Object[] objects) {
         for (Object obj : objects) {
             System.out.println(obj);
         }
-    }
-
-    public static String checkIfBlankAndReturn(String str, String oldStr) {
-        return str != null && !str.isBlank() ? str : oldStr;
     }
 }
