@@ -10,8 +10,8 @@ public class Human {
 
     public Human(int yearOfBirth, String name, String town) {
         this.yearOfBirth = Math.max(yearOfBirth, this.yearOfBirth);
-        this.name = Main.checkIfBlankAndReturn(name, this.name);
-        this.town = Main.checkIfBlankAndReturn(town, this.town);
+        if (!isNullOrBlank(name)) this.name = name;
+        if (!isNullOrBlank(town)) this.town = town;
     }
 
     public Human(int yearOfBirth, String name, String town, String jobTitle) {
@@ -19,17 +19,38 @@ public class Human {
         this.jobTitle = jobTitle;
     }
 
+    public int getYearOfBirth() {
+        return yearOfBirth;
+    }
+
+    public String getTown() {
+        return town;
+    }
+
+    public void setYearOfBirth(int yearOfBirth) {
+        this.yearOfBirth = Math.max(yearOfBirth, this.yearOfBirth);
+    }
+
+    public void setTown(String town) {
+        if (!isNullOrBlank(town)) this.town = town;
+    }
+
     public void setJobTitle(String jobTitle) {
         this.jobTitle = jobTitle;
     }
 
+    private boolean isNullOrBlank(String str) {
+        return str == null || str.isBlank();
+    }
+
     @Override
     public String toString() {
-        if (jobTitle != null && !jobTitle.isBlank()) {
-            return String.format("Привет! Меня зовут %s. Я из города %s. Я родился в %d году. Я работаю на должности %s. Будем знакомы!", name, town, yearOfBirth, jobTitle);
-        } else {
-            return String.format("Привет! Меня зовут %s. Я из города %s. Я родился в %d году. Будем знакомы!", name, town, yearOfBirth);
-
-        }
+        StringBuilder stringBuilder = new StringBuilder("Привет!");
+        if (name != NOT_SPECIFIED) stringBuilder.append(" Меня зовут ").append(name).append(".");
+        if (town != NOT_SPECIFIED) stringBuilder.append(" Я из города ").append(town).append(".");
+        stringBuilder.append(" Я родился в ").append(yearOfBirth).append(" году.");
+        if (jobTitle != NOT_SPECIFIED) stringBuilder.append(" Я работаю на должности ").append(jobTitle).append(".");
+        stringBuilder.append(" Будем знакомы!");
+        return stringBuilder.toString();
     }
 }
