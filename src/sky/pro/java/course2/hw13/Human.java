@@ -2,55 +2,55 @@ package sky.pro.java.course2.hw13;
 
 public class Human {
     private static final String NOT_SPECIFIED = "Информация не указана";
+    private static final Integer DEFAULT_YEAR_OF_BIRTH = 1984;
 
-    private int yearOfBirth = 0;
-    private String name = NOT_SPECIFIED;
-    private String town = NOT_SPECIFIED;
-    private String jobTitle = NOT_SPECIFIED;
+    private Integer yearOfBirth;
+    private final String NAME;
+    private String town;
+    private String jobTitle;
 
-    public Human(int yearOfBirth, String name, String town) {
-        this.yearOfBirth = Math.max(yearOfBirth, this.yearOfBirth);
-        if (!isNullOrBlank(name)) this.name = name;
-        if (!isNullOrBlank(town)) this.town = town;
+    public Human(Integer yearOfBirth, String name, String town) {
+        setYearOfBirth(yearOfBirth);
+        this.NAME = Utility.isStringNotNullOrBlank(name) ? name : NOT_SPECIFIED;
+        setTown(town);
+        jobTitle = NOT_SPECIFIED;
     }
 
     public Human(int yearOfBirth, String name, String town, String jobTitle) {
         this(yearOfBirth, name, town);
-        this.jobTitle = jobTitle;
+        setJobTitle(jobTitle);
     }
 
     public int getYearOfBirth() {
         return yearOfBirth;
     }
 
+    public String getNAME() {
+        return NAME;
+    }
+
     public String getTown() {
         return town;
     }
 
-    public void setYearOfBirth(int yearOfBirth) {
-        this.yearOfBirth = Math.max(yearOfBirth, this.yearOfBirth);
+    public void setYearOfBirth(Integer yearOfBirth) {
+        this.yearOfBirth = Utility.isNumberNotNullOrNegative(yearOfBirth) ? yearOfBirth : DEFAULT_YEAR_OF_BIRTH;
     }
 
     public void setTown(String town) {
-        if (!isNullOrBlank(town)) this.town = town;
+        this.town = Utility.isStringNotNullOrBlank(town) ? town : NOT_SPECIFIED;
     }
 
     public void setJobTitle(String jobTitle) {
-        this.jobTitle = jobTitle;
-    }
-
-    private boolean isNullOrBlank(String str) {
-        return str == null || str.isBlank();
+        this.jobTitle = Utility.isStringNotNullOrBlank(jobTitle) ? jobTitle : NOT_SPECIFIED;
     }
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder("Привет!");
-        if (name != NOT_SPECIFIED) stringBuilder.append(" Меня зовут ").append(name).append(".");
-        if (town != NOT_SPECIFIED) stringBuilder.append(" Я из города ").append(town).append(".");
-        stringBuilder.append(" Я родился в ").append(yearOfBirth).append(" году.");
-        if (jobTitle != NOT_SPECIFIED) stringBuilder.append(" Я работаю на должности ").append(jobTitle).append(".");
-        stringBuilder.append(" Будем знакомы!");
-        return stringBuilder.toString();
+        return "Привет!" + " Меня зовут " + NAME + "." +
+                " Я из города " + town + "." +
+                " Я родился в " + yearOfBirth + " году." +
+                " Я работаю на должности " + jobTitle + "." +
+                " Будем знакомы!";
     }
 }

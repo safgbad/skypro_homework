@@ -1,4 +1,6 @@
-package sky.pro.java.course2.hw13;
+package sky.pro.java.course2.hw13.transport;
+
+import sky.pro.java.course2.hw13.Utility;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -6,7 +8,7 @@ import java.time.Month;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-public class Car {
+public class Car extends Transport {
     public enum Body {
         UNDEFINED("Не определено"),
         SEDAN("Седан"),
@@ -19,15 +21,15 @@ public class Car {
         MINIVAN("Минивэн"),
         PICKUP_TRUCK("Пикап");
 
-        private final String body;
+        private final String BODY;
 
-        Body(String body) {
-            this.body = body;
+        Body(String BODY) {
+            this.BODY = BODY;
         }
 
         @Override
         public String toString() {
-            return body;
+            return BODY;
         }
     }
 
@@ -38,34 +40,32 @@ public class Car {
         ROBOTIC("Робот"),
         VARIABLE("Вариатор");
 
-        private final String transmission;
+        private final String TRANSMISSION;
 
-        Transmission(String transmission) {
-            this.transmission = transmission;
+        Transmission(String TRANSMISSION) {
+            this.TRANSMISSION = TRANSMISSION;
         }
 
         @Override
         public String toString() {
-            return transmission;
+            return TRANSMISSION;
         }
     }
 
     public static class Key {
-        private static final Key DEFAULT_KEY = new Key(false, false);
+        private final Boolean REMOTE_START;
+        private final Boolean KEYLESS_ACCESS;
 
-        private final boolean REMOTE_START;
-        private final boolean KEYLESS_ACCESS;
-
-        public Key(boolean REMOTE_START, boolean KEYLESS_ACCESS) {
+        public Key(Boolean REMOTE_START, Boolean KEYLESS_ACCESS) {
             this.REMOTE_START = REMOTE_START;
             this.KEYLESS_ACCESS = KEYLESS_ACCESS;
         }
 
-        public boolean isREMOTE_START() {
+        public Boolean isREMOTE_START() {
             return REMOTE_START;
         }
 
-        public boolean isKEYLESS_ACCESS() {
+        public Boolean isKEYLESS_ACCESS() {
             return KEYLESS_ACCESS;
         }
 
@@ -90,109 +90,84 @@ public class Car {
     }
 
     public static class Insurance {
-        private LocalDate validity = LocalDate.now();
-        private double cost = 1;
-        private String number = "AA00000AA";
+        private static final Double DEFAULT_COST = 500_000.0;
 
-        public Insurance(LocalDate validity, double cost, String number) {
-            if (validity != null) this.validity = validity;
-            if (cost > 0) this.cost = cost;
-            if (number.length() == 9) this.number = number;
+        private final LocalDate VALIDITY;
+        private final Double COST;
+        private final String NUMBER;
+
+        public Insurance(LocalDate VALIDITY, double COST, String NUMBER) {
+            this.VALIDITY = VALIDITY != null ? VALIDITY : LocalDate.now();
+            this.COST = Utility.isNumberNotNullOrNegative(COST) ? COST : DEFAULT_COST;
+            this.NUMBER = Utility.isStringNotNullOrBlank(NUMBER) && NUMBER.length() == 9 ? NUMBER : DEFAULT;
         }
 
-        public LocalDate getValidity() {
-            return validity;
+        public LocalDate getVALIDITY() {
+            return VALIDITY;
         }
 
-        public double getCost() {
-            return cost;
+        public double getCOST() {
+            return COST;
         }
 
-        public String getNumber() {
-            return number;
+        public String getNUMBER() {
+            return NUMBER;
         }
 
         private boolean checkValidity() {
-            return validity.isBefore(LocalDate.now().plusDays(1));
+            return VALIDITY.isBefore(LocalDate.now().plusDays(1));
         }
 
         @Override
         public String toString() {
-            return String.format("[Срок действия: %s, Стоимость: %.2f, Номер: %s]", validity, cost, number);
+            return String.format("[Срок действия: %s, Стоимость: %.2f, Номер: %s]", VALIDITY, COST, NUMBER);
         }
     }
 
-    private static final String DEFAULT = "default";
+    private static final Double DEFAULT_ENGINE_VOLUME = 1.5;
+    private static final Integer DEFAULT_NUMBER_OF_SEATS = 5;
 
-    private String brand = DEFAULT;
-    private String model = DEFAULT;
-    private double engineVolume = 1.5;
-    private String color = "белый";
-    private int year = 2000;
-    private String country = DEFAULT;
-    private Transmission transmission = Transmission.UNDEFINED;
-    private Body body = Body.UNDEFINED;
-    private String registrationNumber = DEFAULT;
-    private int numberOfSeats = 5;
+    private double engineVolume;
+    private Transmission transmission;
+    private final Body BODY;
+    private String registrationNumber;
+    private final Integer NUMBER_OF_SEATS;
     private boolean areTiresWinter;
-    private Key key = Key.DEFAULT_KEY;
+    private Key key;
     private Insurance insurance;
 
-    public Car(String brand, String model, double engineVolume, String color, int year, String country,
-               Transmission transmission, Body body, String registrationNumber, int numberOfSeats, boolean areTiresWinter, Key key, Insurance insurance) {
-        if (!isNullOrBlank(brand)) this.brand = brand;
-        if (!isNullOrBlank(model)) this.model = model;
-        if (engineVolume > 0) this.engineVolume = engineVolume;
-        if (!isNullOrBlank(color)) this.color = color;
-        if (year > 0) this.year = year;
-        if (!isNullOrBlank(country)) this.country = country;
-        if (transmission != null) this.transmission = transmission;
-        if (body != null) this.body = body;
-        if (registrationNumber != null && checkRegistrationNumber(registrationNumber)) this.registrationNumber = registrationNumber;
-        if (numberOfSeats > 0) this.numberOfSeats = numberOfSeats;
-        this.areTiresWinter = areTiresWinter;
-        if (key != null) this.key = key;
+    public Car(String BRAND, String MODEL, Double engineVolume, String color, Integer YEAR, String COUNTRY, Double maxSpeed, Fuel fuel, Boolean isFueled,
+               Transmission transmission, Body BODY, String registrationNumber, Integer NUMBER_OF_SEATS, Boolean areTiresWinter, Key key, Insurance insurance) {
+        super(BRAND, MODEL, YEAR, COUNTRY, color, maxSpeed, isFueled);
+        setFuelType(fuel);
+        this.engineVolume = Utility.isNumberNotNullOrNegative(engineVolume) ? engineVolume : DEFAULT_ENGINE_VOLUME;
+        this.transmission = transmission != null ? transmission : Transmission.UNDEFINED;
+        this.BODY = BODY != null ? BODY : Body.UNDEFINED;
+        this.registrationNumber = checkRegistrationNumber(registrationNumber) ? registrationNumber : DEFAULT;
+        this.NUMBER_OF_SEATS = Utility.isNumberNotNullOrNegative(NUMBER_OF_SEATS) ? NUMBER_OF_SEATS : DEFAULT_NUMBER_OF_SEATS;
+        this.areTiresWinter = areTiresWinter != null ? areTiresWinter : false;
+        this.key = key;
         this.insurance = insurance;
-    }
-
-    public String getBrand() {
-        return brand;
-    }
-
-    public String getModel() {
-        return model;
     }
 
     public double getEngineVolume() {
         return engineVolume;
     }
 
-    public String getColor() {
-        return color;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
     public Transmission getTransmission() {
         return transmission;
     }
 
-    public Body getBody() {
-        return body;
+    public Body getBODY() {
+        return BODY;
     }
 
     public String getRegistrationNumber() {
         return registrationNumber;
     }
 
-    public int getNumberOfSeats() {
-        return numberOfSeats;
+    public int getNUMBER_OF_SEATS() {
+        return NUMBER_OF_SEATS;
     }
 
     public boolean areTiresWinter() {
@@ -209,10 +184,6 @@ public class Car {
 
     public void setEngineVolume(double engineVolume) {
         this.engineVolume = engineVolume;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
     }
 
     public void setTransmission(Transmission transmission) {
@@ -235,6 +206,11 @@ public class Car {
         this.insurance = insurance;
     }
 
+    @Override
+    public void setFuelType(Fuel fuel) {
+        setFuel(fuel);
+    }
+
     public void changeTiresToSeasonal() {
         Month currentMonth =  LocalDateTime.now().getMonth();
         switch (currentMonth) {
@@ -254,22 +230,18 @@ public class Car {
     public static boolean checkRegistrationNumber(String registrationNumber) {
         String regex = "^[А-Яа-я]\\d{3}[А-Яа-я]{2}\\d{3}";
         Pattern pattern = Pattern.compile(regex);
-        return pattern.matcher(registrationNumber).matches();
-    }
-
-    private boolean isNullOrBlank(String str) {
-        return str == null || str.isBlank();
+        return registrationNumber != null && pattern.matcher(registrationNumber).matches();
     }
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder(String.format("----------\n%s %s\nГод выпуска: %d\nCборка: %s\nЦвет: %s\n" +
+        StringBuilder stringBuilder = new StringBuilder(String.format("%s\n%s\n" +
                         "Объем двигателя: %.1f л.\nПосадочных мест: %d\nРезина: %s\n",
-                brand, model, year, country, color, engineVolume, numberOfSeats, areTiresWinter ? "Зимняя" : "Летняя"));
+                DELIMITER, getStringInfo(), engineVolume, NUMBER_OF_SEATS, areTiresWinter ? "Зимняя" : "Летняя"));
         if (transmission != null) stringBuilder.append("Коробка передач: ").append(transmission).append('\n');
-        if (body != null) stringBuilder.append("Тип кузова: ").append(body).append('\n');
-        if (registrationNumber != DEFAULT) stringBuilder.append("Регистрационный номер: ").append(registrationNumber).append('\n');
-        if (key != Key.DEFAULT_KEY) stringBuilder.append(key).append('\n');
+        if (BODY != null) stringBuilder.append("Тип кузова: ").append(BODY).append('\n');
+        stringBuilder.append("Регистрационный номер: ").append(registrationNumber).append('\n');
+        if (key != null) stringBuilder.append(key).append('\n');
         stringBuilder.append("Страховка: ");
         if (insurance != null && insurance.checkValidity()) {
             stringBuilder.append("да ").append(insurance);
@@ -278,7 +250,7 @@ public class Car {
         } else {
             stringBuilder.append("нет");
         }
-        stringBuilder.append("\n----------");
+        stringBuilder.append('\n').append(DELIMITER);
         return stringBuilder.toString();
     }
 }
