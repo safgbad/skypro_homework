@@ -11,28 +11,28 @@ public class Car extends Transport {
 
     @Override
     public void startMoving() {
-        System.out.printf("%s %s %s начал движение\n", CLASS, getBRAND(), getMODEL());
+        System.out.printf("%s %s %s начал движение\n", CLASS, getBrand(), getModel());
     }
 
     @Override
     public void stopMoving() {
-        System.out.printf("%s %s %s остановился\n", CLASS, getBRAND(), getMODEL());
+        System.out.printf("%s %s %s остановился\n", CLASS, getBrand(), getModel());
     }
 
     @Override
     public void pitStop() {
-        System.out.printf("%s %s %s на пит-стопе\n", CLASS, getBRAND(), getMODEL());
+        System.out.printf("%s %s %s на пит-стопе\n", CLASS, getBrand(), getModel());
     }
 
     @Override
     public void showBestLapTime() {
-        System.out.printf("Лучшее время %s %s: %d мин %d сек\n", getBRAND(), getMODEL(),
+        System.out.printf("Лучшее время %s %s: %d мин %d сек\n", getBrand(), getModel(),
                 (int) (60 * Math.random()), (int) (60 * Math.random()));
     }
 
     @Override
     public void showMaxSpeed() {
-        System.out.printf("Максимальная скорость %s %s: %d км/ч\n", getBRAND(), getMODEL(),
+        System.out.printf("Максимальная скорость %s %s: %d км/ч\n", getBrand(), getModel(),
                 (int) (270 * Math.random()));
     }
 

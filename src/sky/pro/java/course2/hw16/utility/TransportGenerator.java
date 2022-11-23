@@ -8,19 +8,19 @@ public class TransportGenerator<T extends Transport> {
     private static final int ALPHABET_BEGIN = 'a';
     private static final int ALPHABET_END = 'z';
 
-    private final int MAX_BRAND_LENGTH;
-    private final int MAX_MODEL_LENGTH;
-    private final double MIN_ENGINE_VOLUME;
-    private final double MAX_ENGINE_VOLUME;
+    private final int maxBrandLength;
+    private final int maxModelLength;
+    private final double minEngineVolume;
+    private final double maxEngineVolume;
     private final Class<T> CLASS;
 
-    public TransportGenerator(int MAX_BRAND_LENGTH, int MAX_MODEL_LENGTH,
-                              double MIN_ENGINE_VOLUME, double MAX_ENGINE_VOLUME, Class<T> CLASS) {
-        this.MAX_BRAND_LENGTH = Math.max(MAX_BRAND_LENGTH, 3);
-        this.MAX_MODEL_LENGTH = Math.max(MAX_MODEL_LENGTH, 3);
-        this.MIN_ENGINE_VOLUME = Math.max(MIN_ENGINE_VOLUME, 0);
-        this.MAX_ENGINE_VOLUME = MAX_ENGINE_VOLUME > this.MIN_ENGINE_VOLUME ?
-                MAX_ENGINE_VOLUME : this.MIN_ENGINE_VOLUME + 2;
+    public TransportGenerator(int maxBrandLength, int maxModelLength,
+                              double minEngineVolume, double maxEngineVolume, Class<T> CLASS) {
+        this.maxBrandLength = Math.max(maxBrandLength, 3);
+        this.maxModelLength = Math.max(maxModelLength, 3);
+        this.minEngineVolume = Math.max(minEngineVolume, 0);
+        this.maxEngineVolume = maxEngineVolume > this.minEngineVolume ?
+                maxEngineVolume : this.minEngineVolume + 2;
         this.CLASS = CLASS;
     }
 
@@ -33,15 +33,15 @@ public class TransportGenerator<T extends Transport> {
     }
 
     private T generate() {
-        int brandLength = (int) (1 + MAX_BRAND_LENGTH * Math.random());
+        int brandLength = (int) (1 + maxBrandLength * Math.random());
         char[] brand_char = new char[brandLength];
         fillArray(brand_char);
         String brand = new String(brand_char);
-        int modelLength = (int) (1 + MAX_MODEL_LENGTH * Math.random());
+        int modelLength = (int) (1 + maxModelLength * Math.random());
         char[] model_char = new char[modelLength];
         fillArray(model_char);
         String model = new String(model_char);
-        Double engineVolume = MIN_ENGINE_VOLUME + (MAX_ENGINE_VOLUME - MIN_ENGINE_VOLUME) * Math.random();
+        Double engineVolume = minEngineVolume + (maxEngineVolume - minEngineVolume) * Math.random();
         try {
              return CLASS.getConstructor(String.class, String.class, Double.class).
                     newInstance(brand, model, engineVolume);

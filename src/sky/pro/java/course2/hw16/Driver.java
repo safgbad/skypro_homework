@@ -8,24 +8,24 @@ public class Driver<T extends Transport> {
     private static final Boolean DEFAULT_DOES_HAVE_DRIVING_LICENSE = false;
     private static final Integer DEFAULT_EXPERIENCE = 0;
 
-    private final String FULL_NAME;
-    private final T VEHICLE;
+    private final String fullName;
+    private final T vehicle;
     private Boolean doesHaveDrivingLicense;
     private Integer experience;
 
-    public Driver(String FULL_NAME, T VEHICLE, Boolean doesHaveDrivingLicense, Integer experience) {
-        this.FULL_NAME = InputCheck.isStringNotNullAndNotBlank(FULL_NAME) ? FULL_NAME : DEFAULT_FULL_NAME;
-        this.VEHICLE = VEHICLE;
+    public Driver(String fullName, T vehicle, Boolean doesHaveDrivingLicense, Integer experience) {
+        this.fullName = InputCheck.isStringNotNullAndNotBlank(fullName) ? fullName : DEFAULT_FULL_NAME;
+        this.vehicle = vehicle;
         setDoesHaveDrivingLicense(doesHaveDrivingLicense);
         setExperience(experience);
     }
 
-    public String getFULL_NAME() {
-        return FULL_NAME;
+    public String getFullName() {
+        return fullName;
     }
 
-    public T getVEHICLE() {
-        return VEHICLE;
+    public T getVehicle() {
+        return vehicle;
     }
 
     public Boolean getDoesHaveDrivingLicense() {
@@ -49,8 +49,8 @@ public class Driver<T extends Transport> {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(DELIMITER).append('\n');
-        stringBuilder.append("Водитель: ").append(FULL_NAME).append('\n');
-        stringBuilder.append(VEHICLE).append('\n');
+        stringBuilder.append("Водитель: ").append(fullName).append('\n');
+        stringBuilder.append(vehicle).append('\n');
         stringBuilder.append("Стаж: ").append(experience).append(" лет\n");
         stringBuilder.append("Наличие водительских прав: ");
         if (doesHaveDrivingLicense) {

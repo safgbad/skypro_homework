@@ -9,22 +9,22 @@ public abstract class Transport implements Competing {
     private static final String DEFAULT_MODEL = "undefined";
     private static final Double DEFAULT_ENGINE_VOLUME = 2.4;
 
-    private final String BRAND;
-    private final String MODEL;
+    private final String brand;
+    private final String model;
     private Double engineVolume;
 
-    public Transport(String BRAND, String MODEL, Double engineVolume) {
-        this.BRAND = InputCheck.isStringNotNullAndNotBlank(BRAND) ? BRAND : DEFAULT_BRAND;
-        this.MODEL = InputCheck.isStringNotNullAndNotBlank(MODEL) ? MODEL : DEFAULT_MODEL;
+    public Transport(String brand, String model, Double engineVolume) {
+        this.brand = InputCheck.isStringNotNullAndNotBlank(brand) ? brand : DEFAULT_BRAND;
+        this.model = InputCheck.isStringNotNullAndNotBlank(model) ? model : DEFAULT_MODEL;
         this.engineVolume = engineVolume;
     }
 
-    public String getBRAND() {
-        return BRAND;
+    public String getBrand() {
+        return brand;
     }
 
-    public String getMODEL() {
-        return MODEL;
+    public String getModel() {
+        return model;
     }
 
     public Double getEngineVolume() {
@@ -42,7 +42,7 @@ public abstract class Transport implements Competing {
 
     @Override
     public String toString() {
-        return String.format("%s %s с двигателем объемом %.1f", BRAND, MODEL, engineVolume);
+        return String.format("%s %s с двигателем объемом %.1f", brand, model, engineVolume);
     }
 
     @Override
@@ -50,12 +50,12 @@ public abstract class Transport implements Competing {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Transport transport = (Transport) o;
-        return BRAND.equals(transport.BRAND) && MODEL.equals(transport.MODEL)
+        return brand.equals(transport.brand) && model.equals(transport.model)
                 && engineVolume.equals(transport.engineVolume);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(BRAND, MODEL, engineVolume);
+        return Objects.hash(brand, model, engineVolume);
     }
 }
