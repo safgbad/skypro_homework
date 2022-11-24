@@ -2,18 +2,18 @@ package sky.pro.java.course2.hw16;
 
 import sky.pro.java.course2.hw16.utility.InputCheck;
 
-public class Driver<T extends Transport> {
+public class Driver {
     private static final String DELIMITER = "----------";
     private static final String DEFAULT_FULL_NAME = "undefined";
     private static final Boolean DEFAULT_DOES_HAVE_DRIVING_LICENSE = false;
     private static final Integer DEFAULT_EXPERIENCE = 0;
 
     private final String fullName;
-    private final T vehicle;
+    private final Transport vehicle;
     private Boolean doesHaveDrivingLicense;
     private Integer experience;
 
-    public Driver(String fullName, T vehicle, Boolean doesHaveDrivingLicense, Integer experience) {
+    public Driver(String fullName, Transport vehicle, Boolean doesHaveDrivingLicense, Integer experience) {
         this.fullName = InputCheck.isStringNotNullAndNotBlank(fullName) ? fullName : DEFAULT_FULL_NAME;
         this.vehicle = vehicle;
         setDoesHaveDrivingLicense(doesHaveDrivingLicense);
@@ -24,7 +24,7 @@ public class Driver<T extends Transport> {
         return fullName;
     }
 
-    public T getVehicle() {
+    public Transport getVehicle() {
         return vehicle;
     }
 

@@ -37,19 +37,19 @@ public class Main {
         System.out.println("---------------------------------------------------------------------");
 
         ArrayList<Driver> drivers = new ArrayList<>();
-        drivers.add(new Driver<>("Андреев Андрей Андреевич", cars.get(2),
+        drivers.add(new Driver("Андреев Андрей Андреевич", cars.get(2),
                 true, 7));
-        drivers.add(new Driver<>("Васильев Василий Васильевич", cars.get(1),
+        drivers.add(new Driver("Васильев Василий Васильевич", cars.get(1),
                 false, null));
-        drivers.add(new Driver<>("Никитин Никита Никитович", cars.get(0),
+        drivers.add(new Driver("Никитин Никита Никитович", cars.get(0),
                 true, 3));
-        drivers.add(new Driver<>("Георгиев Георгий Георгиевич", cars.get(3),
+        drivers.add(new Driver("Георгиев Георгий Георгиевич", cars.get(3),
                 false, -1));
 
-        drivers.add(new Driver<>("Михайлов Михаил Михайлович", trucks.get(2),
+        drivers.add(new Driver("Михайлов Михаил Михайлович", trucks.get(2),
                 true, 9));
 
-        drivers.add(new Driver<>("Евгеньев Евгений Евгеньевич", buses.get(1),
+        drivers.add(new Driver("Евгеньев Евгений Евгеньевич", buses.get(1),
                 true, 4));
 
         printObjects(drivers);
