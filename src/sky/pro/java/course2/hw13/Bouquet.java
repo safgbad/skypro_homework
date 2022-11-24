@@ -6,22 +6,29 @@ import java.util.Objects;
 
 public class Bouquet {
     public static class Flower {
-        private String name = "Название цветка не указано";
-        private String flowerColor = "белый";
-        private String country = "Россия";
-        private double cost = 1;
-        private int lifeSpan = 3;
+        private static final String DEFAULT = "default";
+        private static final String DEFAULT_COUNTRY = "Россия";
+        private static final String DEFAULT_COLOR = "белый";
+        private static final Double DEFAULT_COST = 1.0;
+        private static final Integer DEFAULT_LIFESPAN = 3;
 
-        public Flower(String name, String flowerColor, String country, double cost) {
-            if (!isNullOrBlank(name)) this.name = name;
-            if (!isNullOrBlank(flowerColor)) this.flowerColor = flowerColor;
-            if (!isNullOrBlank(country)) this.country = country;
-            if (cost > 0) this.cost = roundCost(cost);
+        private String name;
+        private String flowerColor;
+        private String country;
+        private Double cost;
+        private Integer lifeSpan;
+
+        public Flower(String name, String flowerColor, String country, Double cost) {
+            setName(name);
+            setFlowerColor(flowerColor);
+            setCountry(country);
+            setCost(cost);
+            lifeSpan = DEFAULT_LIFESPAN;
         }
 
-        public Flower(String name, String flowerColor, String country, double cost, int lifeSpan) {
+        public Flower(String name, String flowerColor, String country, Double cost, Integer lifeSpan) {
             this(name, flowerColor, country, cost);
-            if (lifeSpan > 0) this.lifeSpan = lifeSpan;
+            setLifeSpan(lifeSpan);
         }
 
         public String getName() {
@@ -36,36 +43,33 @@ public class Bouquet {
             return country;
         }
 
-        public double getCost() {
+        public Double getCost() {
             return cost;
         }
 
-        public int getLifeSpan() {
+        public Integer getLifeSpan() {
             return lifeSpan;
         }
 
         public void setName(String name) {
-            if (isNullOrBlank(name)) this.name = name;
+            this.name = Utility.isStringNotNullOrBlank(name) ? name : DEFAULT;
         }
 
         public void setFlowerColor(String flowerColor) {
-            if (isNullOrBlank(flowerColor)) this.flowerColor = flowerColor;
+            this.flowerColor = Utility.isStringNotNullOrBlank(flowerColor) ? flowerColor : DEFAULT_COLOR;
         }
 
         public void setCountry(String country) {
-            if (isNullOrBlank(country)) this.country = country;
+            this.country = Utility.isStringNotNullOrBlank(country) ? country : DEFAULT_COUNTRY;
+
         }
 
         public void setCost(double cost) {
-            if (cost > 0) this.cost = roundCost(cost);
+            this.cost = Utility.isNumberNotNullOrNegative(cost) ? cost : DEFAULT_COST;
         }
 
         public void setLifeSpan(int lifeSpan) {
-            if (lifeSpan > 0) this.lifeSpan = lifeSpan;
-        }
-
-        private boolean isNullOrBlank(String str) {
-            return str == null || str.isBlank();
+            this.lifeSpan = Utility.isNumberNotNullOrNegative(lifeSpan) ? lifeSpan : DEFAULT_LIFESPAN;
         }
 
         private double roundCost(double cost) {
@@ -77,7 +81,7 @@ public class Bouquet {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             Flower flower = (Flower) o;
-            return Double.compare(flower.cost, cost) == 0 && lifeSpan == flower.lifeSpan && name.equals(flower.name) && flowerColor.equals(flower.flowerColor) && country.equals(flower.country);
+            return Double.compare(flower.cost, cost) == 0 && lifeSpan.equals(flower.lifeSpan) && name.equals(flower.name) && flowerColor.equals(flower.flowerColor) && country.equals(flower.country);
         }
 
         @Override
