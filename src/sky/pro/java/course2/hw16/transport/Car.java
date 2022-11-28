@@ -1,12 +1,29 @@
 package sky.pro.java.course2.hw16.transport;
 
 import sky.pro.java.course2.hw16.Transport;
+import sky.pro.java.course2.hw16.enums.Body;
 
 public class Car extends Transport {
     private static final String CLASS = "Легковой автомобиль";
 
-    public Car(String BRAND, String MODEL, Double engineVolume) {
-        super(BRAND, MODEL, engineVolume);
+    private Body body;
+
+    public Car(String brand, String model, Double engineVolume) {
+        super(brand, model, engineVolume);
+        this.body = Body.getRandom();
+    }
+
+    public Car(String brand, String model, Double engineVolume, Body body) {
+        super(brand, model, engineVolume);
+        this.body = body;
+    }
+
+    public Body getBody() {
+        return body;
+    }
+
+    public void setBody(Body body) {
+        this.body = body != null ? body : Body.getRandom();
     }
 
     @Override
@@ -17,6 +34,15 @@ public class Car extends Transport {
     @Override
     public void stopMoving() {
         System.out.printf("%s %s %s остановился\n", CLASS, getBrand(), getModel());
+    }
+
+    @Override
+    public void printType() {
+        if (body == null) {
+            System.out.println(Transport.NO_TYPE);
+        } else {
+            System.out.println(body);
+        }
     }
 
     @Override
@@ -38,6 +64,6 @@ public class Car extends Transport {
 
     @Override
     public String toString() {
-        return String.format("%s %s", CLASS, super.toString());
+        return String.format("%s %s\n%s", CLASS, super.toString(), body);
     }
 }
