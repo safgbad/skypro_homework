@@ -5,6 +5,8 @@ import sky.pro.java.course2.hw16.utility.InputCheck;
 import java.util.Objects;
 
 public abstract class Transport implements Competing {
+    public static final String NO_TYPE = "Данных по транспортному средству недостаточно";
+
     private static final String DEFAULT_BRAND = "undefined";
     private static final String DEFAULT_MODEL = "undefined";
     private static final Double DEFAULT_ENGINE_VOLUME = 2.4;
@@ -39,6 +41,8 @@ public abstract class Transport implements Competing {
     public abstract void startMoving();
 
     public abstract void stopMoving();
+
+    public abstract void printType();
 
     @Override
     public String toString() {
