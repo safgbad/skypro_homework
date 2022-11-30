@@ -1,6 +1,6 @@
 package sky.pro.java.course2.hw16.utility;
 
-import sky.pro.java.course2.hw16.Transport;
+import sky.pro.java.course2.hw16.transport.Transport;
 
 import java.util.ArrayList;
 

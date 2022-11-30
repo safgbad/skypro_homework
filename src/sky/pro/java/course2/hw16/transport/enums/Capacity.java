@@ -1,4 +1,4 @@
-package sky.pro.java.course2.hw16.enums;
+package sky.pro.java.course2.hw16.transport.enums;
 
 public enum Capacity {
     XS(null, 10),

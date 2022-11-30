@@ -1,5 +1,6 @@
-package sky.pro.java.course2.hw16;
+package sky.pro.java.course2.hw16.transport;
 
+import sky.pro.java.course2.hw16.driver.Driver;
 import sky.pro.java.course2.hw16.utility.InputCheck;
 
 import java.util.Objects;
@@ -14,11 +15,13 @@ public abstract class Transport implements Competing {
     private final String brand;
     private final String model;
     private Double engineVolume;
+    private Driver driver;
 
-    public Transport(String brand, String model, Double engineVolume) {
+    public Transport(String brand, String model, Double engineVolume, Driver driver) {
         this.brand = InputCheck.isStringNotNullAndNotBlank(brand) ? brand : DEFAULT_BRAND;
         this.model = InputCheck.isStringNotNullAndNotBlank(model) ? model : DEFAULT_MODEL;
-        this.engineVolume = engineVolume;
+        setEngineVolume(engineVolume);
+        setDriver(driver);
     }
 
     public String getBrand() {
@@ -33,9 +36,17 @@ public abstract class Transport implements Competing {
         return engineVolume;
     }
 
+    public Driver getDriver() {
+        return driver;
+    }
+
     public void setEngineVolume(Double engineVolume) {
         this.engineVolume = InputCheck.isNumberNotNullAndNotNegative(engineVolume) ?
                 engineVolume : DEFAULT_ENGINE_VOLUME;
+    }
+
+    public void setDriver(Driver driver) {
+        this.driver = driver;
     }
 
     public abstract void startMoving();
@@ -44,9 +55,14 @@ public abstract class Transport implements Competing {
 
     public abstract void printType();
 
+    public boolean getDiagnosed() {
+        System.out.printf("Транспортное средство %s %s не нуждается в диагностике\n", brand, model);
+        return true;
+    }
+
     @Override
     public String toString() {
-        return String.format("%s %s с двигателем объемом %.1f", brand, model, engineVolume);
+        return String.format("%s %s с двигателем объемом %.1f\n%s", brand, model, engineVolume, driver);
     }
 
     @Override
