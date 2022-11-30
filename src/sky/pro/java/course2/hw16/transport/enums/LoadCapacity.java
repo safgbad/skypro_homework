@@ -1,4 +1,4 @@
-package sky.pro.java.course2.hw16.enums;
+package sky.pro.java.course2.hw16.transport.enums;
 
 public enum LoadCapacity {
     N1(null, 3.5),
