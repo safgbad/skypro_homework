@@ -8,14 +8,16 @@ import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 public class Main {
+    public static final String WRONG_FORMAT = "Неверный формат ввода. Попробуйте еще раз:";
+
     public static Calendar calendar = new Calendar();
 
     public static void main(String[] args) {
         try (Scanner scanner = new Scanner(System.in)) {
             label:
             while (true) {
+                System.out.println("Выберите пункт меню: ");
                 printMenu();
-                System.out.print("Выберите пункт меню: ");
                 if (scanner.hasNextInt()) {
                     int menu = scanner.nextInt();
                     switch (menu) {
@@ -26,7 +28,7 @@ public class Main {
                                 break label;
                             }
                         case 2:
-                            // todo: обрабатываем пункт меню 2
+                            removeTask(scanner);
                             break;
                         case 3:
                             // todo: обрабатываем пункт меню 3
@@ -44,7 +46,6 @@ public class Main {
 
     private static boolean inputTask(Scanner scanner) {
         scanner.nextLine();
-        System.out.println();
         System.out.println("========================================");
         System.out.println("Введите название задачи:");
         String title = scanner.nextLine();
@@ -74,11 +75,10 @@ public class Main {
         boolean shouldEnterAgain = true;
         while (shouldEnterAgain) {
             try {
-                String str = scanner.nextLine();
-                date = LocalDateTime.parse(str, Task.DATE_FORMATTER);
+                date = LocalDateTime.parse(scanner.nextLine(), Task.DATE_FORMATTER);
                 shouldEnterAgain = false;
             } catch (DateTimeParseException e) {
-                System.out.println("Неверный формат ввода. Попробуйте еще раз:");
+                System.out.println(WRONG_FORMAT);
             }
         }
 
@@ -105,10 +105,9 @@ public class Main {
             default:
                 task = new OneTimeTask(title, description, isWork, date);
         }
-        System.out.println("========================================");
-        System.out.println();
         if (calendar.addTask(task)) {
             System.out.println("Задача успешно добавлена!");
+            System.out.println("========================================");
             System.out.println();
             return true;
         }
@@ -116,10 +115,33 @@ public class Main {
         return false;
     }
 
+    private static void removeTask(Scanner scanner) {
+        scanner.nextLine();
+        System.out.println("========================================");
+        System.out.println("Введите ID удаляемой задачи:");
+        boolean shouldEnterAgain = true;
+        int id = 0;
+        while (shouldEnterAgain) {
+            try {
+                id = Integer.parseInt(scanner.nextLine());
+                shouldEnterAgain = false;
+            } catch (NumberFormatException e) {
+                System.out.println(WRONG_FORMAT);
+            }
+        }
+        if (calendar.removeTask(id)) {
+            System.out.println("Задача была успешно удалена!");
+        } else {
+            System.out.println("Задача с таким ID отсутствует в календаре.");
+        }
+        System.out.println("========================================");
+        System.out.println();
+    }
+
     private static void printMenu() {
-        System.out.println("1. Добавить задачу\n" +
-                "2. Удалить задачу\n" +
-                "3. Получить задачу на указанный день\n" +
-                "0. Выход");
+        System.out.println("\t • 1. Добавить задачу\n" +
+                "\t • 2. Удалить задачу\n" +
+                "\t • 3. Получить задачу на указанный день\n" +
+                "\t • 0. Выход");
     }
 }

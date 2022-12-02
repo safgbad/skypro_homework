@@ -21,7 +21,7 @@ public class Calendar {
         return tasks.put(task.getId(), task) == null;
     }
 
-    public boolean deleteTask(int id) {
+    public boolean removeTask(int id) {
         return tasks.remove(id) != null;
     }
 
@@ -30,8 +30,7 @@ public class Calendar {
         LocalDateTime dayWithZeros = LocalDateTime.of(day, LocalTime.MIN);
         LocalDateTime beginningOfTheDay = dayWithZeros.minusNanos(1);
         LocalDateTime endingOfTheDay = dayWithZeros.plusDays(1);
-        for (Integer key : tasks.keySet()) {
-            Task task = tasks.get(key);
+        for (Task task : tasks.values()) {
             if (task instanceof Repeatable) {
                 LocalDateTime taskDate = ((Repeatable) task).getNextDate(beginningOfTheDay);
                 if (taskDate.isBefore(endingOfTheDay)) {
