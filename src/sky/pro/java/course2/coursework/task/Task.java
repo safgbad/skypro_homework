@@ -4,7 +4,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public abstract class Task {
-    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     private final static String DELIMITER = "----------------------------------------";
     private static int counter = 1;
@@ -24,27 +26,38 @@ public abstract class Task {
     }
 
     public LocalDateTime getDate() {
-        if (this instanceof Repeatable) {
-            return ((Repeatable) this).getNextDate(LocalDateTime.now());
-        } else {
-            return date;
-        }
+        return date;
     }
 
     public int getId() {
         return id;
     }
 
+    protected abstract String getType();
+
     @Override
     public String toString() {
         return String.format("%s\n" +
-                "%s, ID: %d [%s]\n" +
+                "%s, ID: %d [%s, %s]\n" +
                 "Время: %s\n" +
                 "%s\n" +
                 "%s",
                 DELIMITER,
-                title, id, isWork ? "Рабочая" : "Личная",
-                date.format(DATE_FORMATTER),
+                title, id, isWork ? "Рабочая" : "Личная", getType(),
+                date.format(DATE_TIME_FORMATTER),
+                description,
+                DELIMITER);
+    }
+
+    public String toStringForDefiniteDay() {
+        return String.format("%s\n" +
+                        "%s, ID: %d [%s, %s]\n" +
+                        "Время: %s\n" +
+                        "%s\n" +
+                        "%s",
+                DELIMITER,
+                title, id, isWork ? "Рабочая" : "Личная", getType(),
+                date.format(TIME_FORMATTER),
                 description,
                 DELIMITER);
     }

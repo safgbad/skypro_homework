@@ -11,6 +11,11 @@ public class DailyTask extends Task implements Repeatable {
     }
 
     @Override
+    protected String getType() {
+        return "Ежедневная";
+    }
+
+    @Override
     public LocalDateTime getNextDate(LocalDateTime fromDate) {
         LocalDateTime result = date;
         while (result.isBefore(fromDate)) {

@@ -6,9 +6,9 @@ import sky.pro.java.course2.coursework.task.Task;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class Calendar {
     private final Map<Integer, Task> tasks;
@@ -25,8 +25,8 @@ public class Calendar {
         return tasks.remove(id) != null;
     }
 
-    public ArrayList<Task> getTasksForDay(LocalDate day) {
-        ArrayList<Task> result = new ArrayList<>();
+    public TreeMap<LocalTime, Task> getTasksForDay(LocalDate day) {
+        TreeMap<LocalTime, Task> result = new TreeMap<>();
         LocalDateTime dayWithZeros = LocalDateTime.of(day, LocalTime.MIN);
         LocalDateTime beginningOfTheDay = dayWithZeros.minusNanos(1);
         LocalDateTime endingOfTheDay = dayWithZeros.plusDays(1);
@@ -34,12 +34,20 @@ public class Calendar {
             if (task instanceof Repeatable) {
                 LocalDateTime taskDate = ((Repeatable) task).getNextDate(beginningOfTheDay);
                 if (taskDate.isBefore(endingOfTheDay)) {
-                    result.add(task);
+                    Task prevTask = result.put(task.getDate().toLocalTime(), task);
+                    int nanosCounter = 0;
+                    while (prevTask != null) {
+                        prevTask = result.put(prevTask.getDate().toLocalTime().plusNanos(++nanosCounter), prevTask);
+                    }
                 }
             } else {
                 LocalDateTime taskDate = task.getDate();
                 if (taskDate.isAfter(beginningOfTheDay) && taskDate.isBefore(endingOfTheDay)) {
-                    result.add(task);
+                    Task prevTask = result.put(task.getDate().toLocalTime(), task);
+                    int nanosCounter = 0;
+                    while (prevTask != null) {
+                        prevTask = result.put(prevTask.getDate().toLocalTime().plusNanos(++nanosCounter), prevTask);
+                    }
                 }
             }
         }

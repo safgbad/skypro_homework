@@ -11,6 +11,11 @@ public class WeeklyTask extends Task implements Repeatable {
     }
 
     @Override
+    protected String getType() {
+        return "Еженедельная";
+    }
+
+    @Override
     public LocalDateTime getNextDate(LocalDateTime fromDate) {
         LocalDateTime result = date;
         while (result.isBefore(fromDate)) {

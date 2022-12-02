@@ -3,9 +3,12 @@ package sky.pro.java.course2.coursework;
 import sky.pro.java.course2.coursework.task.Task;
 import sky.pro.java.course2.coursework.task.tasks.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 public class Main {
     public static final String WRONG_FORMAT = "Неверный формат ввода. Попробуйте еще раз:";
@@ -31,7 +34,7 @@ public class Main {
                             removeTask(scanner);
                             break;
                         case 3:
-                            // todo: обрабатываем пункт меню 3
+                            printTasksForTheDay(scanner);
                             break;
                         case 0:
                             break label;
@@ -75,7 +78,7 @@ public class Main {
         boolean shouldEnterAgain = true;
         while (shouldEnterAgain) {
             try {
-                date = LocalDateTime.parse(scanner.nextLine(), Task.DATE_FORMATTER);
+                date = LocalDateTime.parse(scanner.nextLine(), Task.DATE_TIME_FORMATTER);
                 shouldEnterAgain = false;
             } catch (DateTimeParseException e) {
                 System.out.println(WRONG_FORMAT);
@@ -138,10 +141,34 @@ public class Main {
         System.out.println();
     }
 
+    private static void printTasksForTheDay(Scanner scanner) {
+        scanner.nextLine();
+        System.out.println("========================================");
+        System.out.println("Введите дату (01.01.1970):");
+        boolean shouldEnterAgain = true;
+        LocalDate date = null;
+        while (shouldEnterAgain) {
+            try {
+                date = LocalDate.parse(scanner.nextLine(), Task.DATE_FORMATTER);
+                shouldEnterAgain = false;
+            } catch (DateTimeParseException e) {
+                System.out.println(WRONG_FORMAT);
+            }
+        }
+        TreeMap<LocalTime, Task> tasksForTheDay = calendar.getTasksForDay(date);
+        System.out.println();
+        System.out.printf("Задания на %s:\n", date.format(Task.DATE_FORMATTER));
+        for (Task task : tasksForTheDay.values()) {
+            System.out.println(task.toStringForDefiniteDay());
+        }
+        System.out.println("========================================");
+        System.out.println();
+    }
+
     private static void printMenu() {
         System.out.println("\t • 1. Добавить задачу\n" +
                 "\t • 2. Удалить задачу\n" +
-                "\t • 3. Получить задачу на указанный день\n" +
+                "\t • 3. Получить задачи на указанный день\n" +
                 "\t • 0. Выход");
     }
 }

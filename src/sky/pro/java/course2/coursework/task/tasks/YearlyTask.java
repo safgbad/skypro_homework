@@ -11,6 +11,11 @@ public class YearlyTask extends Task implements Repeatable {
     }
 
     @Override
+    protected String getType() {
+        return "Ежегодная";
+    }
+
+    @Override
     public LocalDateTime getNextDate(LocalDateTime fromDate) {
         LocalDateTime result = date;
         while (result.isBefore(fromDate)) {

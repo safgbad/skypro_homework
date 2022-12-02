@@ -11,6 +11,11 @@ public class MonthlyTask extends Task implements Repeatable {
     }
 
     @Override
+    protected String getType() {
+        return "Ежемесячная";
+    }
+
+    @Override
         public LocalDateTime getNextDate(LocalDateTime fromDate) {
         LocalDateTime result = date;
         while (result.isBefore(fromDate)) {
