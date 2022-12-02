@@ -1,7 +1,7 @@
 package sky.pro.java.course2.coursework;
 
-import sky.pro.java.course2.coursework.tasks.Repeatable;
-import sky.pro.java.course2.coursework.tasks.Task;
+import sky.pro.java.course2.coursework.task.Repeatable;
+import sky.pro.java.course2.coursework.task.Task;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,26 +11,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Calendar {
-    private Map<Integer, Task> tasks;
+    private final Map<Integer, Task> tasks;
 
     public Calendar() {
         tasks = new HashMap<>();
     }
 
     public boolean addTask(Task task) {
-        if (tasks.put(task.getID(), task) == null) {
-            return true;
-        } else {
-            return false;
-        }
+        return tasks.put(task.getId(), task) == null;
     }
 
     public boolean deleteTask(int id) {
-        if (tasks.remove(id) != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return tasks.remove(id) != null;
     }
 
     public ArrayList<Task> getTasksForDay(LocalDate day) {
@@ -46,7 +38,7 @@ public class Calendar {
                     result.add(task);
                 }
             } else {
-                LocalDateTime taskDate = task.getDATE();
+                LocalDateTime taskDate = task.getDate();
                 if (taskDate.isAfter(beginningOfTheDay) && taskDate.isBefore(endingOfTheDay)) {
                     result.add(task);
                 }
