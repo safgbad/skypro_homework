@@ -63,11 +63,11 @@ public abstract class Task {
 
     @Override
     public String toString() {
-        return String.format("%s\n" +
-                "%s, ID: %d [%s, %s]\n" +
-                "Время: %s\n" +
-                "%s\n" +
-                "%s",
+        return String.format("\t%s\n" +
+                "\t%s, ID: %d [%s, %s]\n" +
+                "\tВремя: %s\n" +
+                "\t%s\n" +
+                "\t%s",
                 DELIMITER,
                 title, id, isWork ? "Рабочая" : "Личная", getType(),
                 date.format(DATE_TIME_FORMATTER),
@@ -76,11 +76,11 @@ public abstract class Task {
     }
 
     public String toStringForDefiniteDay() {
-        return String.format("%s\n" +
-                        "%s, ID: %d [%s, %s]\n" +
-                        "Время: %s\n" +
-                        "%s\n" +
-                        "%s",
+        return String.format("\t%s\n" +
+                        "\t%s, ID: %d [%s, %s]\n" +
+                        "\tВремя: %s\n" +
+                        "\t%s\n" +
+                        "\t%s",
                 DELIMITER,
                 title, id, isWork ? "Рабочая" : "Личная", getType(),
                 date.format(TIME_FORMATTER),

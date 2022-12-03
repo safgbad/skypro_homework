@@ -9,6 +9,8 @@ import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 import java.util.TreeMap;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class Main {
     public static final String WRONG_FORMAT = "Неверный формат ввода. Попробуйте еще раз:";
@@ -26,22 +28,22 @@ public class Main {
                     int menu = scanner.nextInt();
                     switch (menu) {
                         case 1:
-                            if (inputTask(scanner)) {
-                                break;
-                            } else {
-                                break label;
-                            }
+                            runMethod(scanner, Main::inputTask);
+                            break;
                         case 2:
-                            editTask(scanner);
+                            runMethod(scanner, Main::editTask);
                             break;
                         case 3:
-                            removeTask(scanner);
+                            runMethod(scanner, Main::removeTask);
                             break;
                         case 4:
-                            printTasksForTheDay(scanner);
+                            runMethod(scanner, Main::printTasksForTheDay);
                             break;
                         case 5:
-                            printDeletedTasks(scanner);
+                            runMethod(scanner, Main::printTasksForPeriod);
+                            break;
+                        case 6:
+                            runMethod(scanner, Main::printDeletedTasks);
                             break;
                         case 0:
                             break label;
@@ -54,15 +56,14 @@ public class Main {
         }
     }
 
-    private static boolean inputTask(Scanner scanner) {
-        scanner.nextLine();
-        System.out.println("========================================");
+    private static void inputTask(Scanner scanner) {
+        // title input
         System.out.println("Введите название задачи:");
         String title = scanner.nextLine();
-
+        // description input
         System.out.println("Введите описание задачи:");
         String description = scanner.nextLine();
-
+        // isWork input
         boolean isWork;
         System.out.println("Эта задача рабочая?");
         switch (scanner.nextLine()) {
@@ -78,10 +79,9 @@ public class Main {
             default:
                 isWork = false;
         }
-
+        // date input
         LocalDateTime date = null;
         System.out.println("Введите дату и время задачи (01.01.1970 00:00:00):");
-
         boolean shouldEnterAgain = true;
         while (shouldEnterAgain) {
             try {
@@ -91,7 +91,7 @@ public class Main {
                 System.out.println(WRONG_FORMAT);
             }
         }
-
+        // creation of Task
         Task task;
         System.out.println("Повторяемость задания:");
         System.out.println("\t • 0 – не повторяется (default)");
@@ -117,87 +117,69 @@ public class Main {
         }
         if (calendar.addTask(task)) {
             System.out.println("Задача успешно добавлена!");
-            System.out.println("========================================");
-            System.out.println();
-            return true;
+            return;
         }
-        System.out.println("Произошла непредвиденная ошибка. Программа завершается.");
-        return false;
+        throw new RuntimeException("Произошла непредвиденная ошибка. Программа завершается.");
     }
 
     private static void editTask(Scanner scanner) {
-        scanner.nextLine();
-        System.out.println("========================================");
         int id = enterId(scanner);
         Task task = calendar.getTask(id);
         if (task != null) {
+            // editing title
             System.out.println("Старое название задачи:");
             System.out.println(task.getTitle());
             System.out.println("Введите новое название (не вводите ничего, если не хотите менять)");
             String title = scanner.nextLine();
             System.out.println();
-
+            //editing description
             System.out.println("Старое описание задачи:");
             System.out.println(task.getDescription());
             System.out.println("Введите новое описание (не вводите ничего, если не хотите менять)");
             String description = scanner.nextLine();
             System.out.println();
-
+            // fix changes
             calendar.editTask(id, title, description);
             System.out.println("Задача успешно отредактирована!");
         } else {
             System.out.println(NOT_FOUND);
         }
-        System.out.println("========================================");
-        System.out.println();
     }
 
     private static void removeTask(Scanner scanner) {
-        scanner.nextLine();
-        System.out.println("========================================");
         int id = enterId(scanner);
         if (calendar.removeTask(id)) {
             System.out.println("Задача была успешно удалена!");
         } else {
             System.out.println(NOT_FOUND);
         }
-        System.out.println("========================================");
-        System.out.println();
     }
 
     private static void printTasksForTheDay(Scanner scanner) {
-        scanner.nextLine();
-        System.out.println("========================================");
         System.out.println("Введите дату (01.01.1970):");
-        boolean shouldEnterAgain = true;
-        LocalDate date = null;
-        while (shouldEnterAgain) {
-            try {
-                date = LocalDate.parse(scanner.nextLine(), Task.DATE_FORMATTER);
-                shouldEnterAgain = false;
-            } catch (DateTimeParseException e) {
-                System.out.println(WRONG_FORMAT);
-            }
+        LocalDate date = enterDate(scanner);
+        printTasksForOneDay(date);
+    }
+
+    private static void printTasksForPeriod(Scanner scanner) {
+        // beginning of period
+        System.out.println("Введите начало периода (01.01.1970):");
+        LocalDate begin = enterDate(scanner);
+        // ending of period
+        System.out.println("Введите конец периода (01.01.1970):");
+        LocalDate end = enterDate(scanner);
+        // output
+        while (begin.isBefore(end.plusDays(1))) {
+            printTasksForOneDay(begin);
+            begin = begin.plusDays(1);
         }
-        TreeMap<LocalTime, Task> tasksForTheDay = calendar.getTasksForDay(date);
-        System.out.println();
-        System.out.printf("Задания на %s:\n", date.format(Task.DATE_FORMATTER));
-        for (Task task : tasksForTheDay.values()) {
-            System.out.println(task.toStringForDefiniteDay());
-        }
-        System.out.println("========================================");
-        System.out.println();
     }
 
     private static void printDeletedTasks(Scanner scanner) {
-        scanner.nextLine();
-        System.out.println("========================================");
         System.out.println("Удаленные задания:");
         for (Task task : calendar.getNotActiveTasks().values()) {
             System.out.println(task);
         }
-        System.out.println("========================================");
-        System.out.println();
     }
 
     private static void printMenu() {
@@ -205,8 +187,18 @@ public class Main {
                 "\t • 2. Редактировать задачу\n" +
                 "\t • 3. Удалить задачу\n" +
                 "\t • 4. Получить задачи на указанный день\n" +
-                "\t • 5. Показать удаленные задачи\n" +
+                "\t • 5. Показать задачи по дням\n" +
+                "\t • 6. Показать удаленные задачи\n" +
                 "\t • 0. Выход");
+    }
+
+    // method framing
+    private static void runMethod(Scanner scanner, Consumer<Scanner> consumer) {
+        scanner.nextLine();
+        System.out.println("========================================");
+        consumer.accept(scanner);
+        System.out.println("========================================");
+        System.out.println();
     }
 
     private static int enterId(Scanner scanner) {
@@ -222,5 +214,33 @@ public class Main {
             }
         }
         return id;
+    }
+
+    private static LocalDate enterDate(Scanner scanner) {
+        boolean shouldEnterAgain = true;
+        LocalDate date = null;
+        while (shouldEnterAgain) {
+            try {
+                date = LocalDate.parse(scanner.nextLine(), Task.DATE_FORMATTER);
+                shouldEnterAgain = false;
+            } catch (DateTimeParseException e) {
+                System.out.println(WRONG_FORMAT);
+            }
+        }
+        return date;
+    }
+
+    // tasks for one day output (used for •4 and •5)
+    private static void printTasksForOneDay(LocalDate date) {
+        TreeMap<LocalTime, Task> tasksForTheDay = calendar.getTasksForDay(date);
+        System.out.println();
+        System.out.printf("Задачи на %s:\n", date.format(Task.DATE_FORMATTER));
+        if (!tasksForTheDay.isEmpty()) {
+            for (Task task : tasksForTheDay.values()) {
+                System.out.println(task.toStringForDefiniteDay());
+            }
+        } else {
+            System.out.println("Задач на этот день нет!");
+        }
     }
 }
