@@ -16,6 +16,7 @@ public abstract class Task {
     private final boolean isWork;
     private final int id;
     protected final LocalDateTime date;
+    private boolean isActive;
 
     public Task(String title, String description, boolean isWork, LocalDateTime date) {
         this.title = title;
@@ -23,6 +24,7 @@ public abstract class Task {
         this.isWork = isWork;
         this.id = counter++;
         this.date = date;
+        isActive = true;
     }
 
     public LocalDateTime getDate() {
@@ -34,6 +36,14 @@ public abstract class Task {
     }
 
     protected abstract String getType();
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
 
     @Override
     public String toString() {

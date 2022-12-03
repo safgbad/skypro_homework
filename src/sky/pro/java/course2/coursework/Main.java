@@ -36,6 +36,9 @@ public class Main {
                         case 3:
                             printTasksForTheDay(scanner);
                             break;
+                        case 4:
+                            printDeletedTasks(scanner);
+                            break;
                         case 0:
                             break label;
                     }
@@ -165,10 +168,22 @@ public class Main {
         System.out.println();
     }
 
+    private static void printDeletedTasks(Scanner scanner) {
+        scanner.nextLine();
+        System.out.println("========================================");
+        System.out.println("Удаленные задания:");
+        for (Task task : calendar.getNotActiveTasks().values()) {
+            System.out.println(task);
+        }
+        System.out.println("========================================");
+        System.out.println();
+    }
+
     private static void printMenu() {
         System.out.println("\t • 1. Добавить задачу\n" +
                 "\t • 2. Удалить задачу\n" +
                 "\t • 3. Получить задачи на указанный день\n" +
+                "\t • 4. Показать удаленные задачи\n" +
                 "\t • 0. Выход");
     }
 }
