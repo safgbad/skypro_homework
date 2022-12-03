@@ -11,39 +11,55 @@ public abstract class Task {
     private final static String DELIMITER = "----------------------------------------";
     private static int counter = 1;
 
-    private final String title;
-    private final String description;
+    private String title;
+    private String description;
     private final boolean isWork;
     private final int id;
     protected final LocalDateTime date;
     private boolean isActive;
 
     public Task(String title, String description, boolean isWork, LocalDateTime date) {
-        this.title = title;
-        this.description = description;
+        setTitle(title);
+        setDescription(description);
         this.isWork = isWork;
         this.id = counter++;
         this.date = date;
         isActive = true;
     }
 
-    public LocalDateTime getDate() {
-        return date;
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public int getId() {
         return id;
     }
 
-    protected abstract String getType();
+    public LocalDateTime getDate() {
+        return date;
+    }
 
     public boolean isActive() {
         return isActive;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public void setActive(boolean active) {
         isActive = active;
     }
+
+    protected abstract String getType();
 
     @Override
     public String toString() {

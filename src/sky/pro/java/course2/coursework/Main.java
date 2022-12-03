@@ -12,6 +12,7 @@ import java.util.TreeMap;
 
 public class Main {
     public static final String WRONG_FORMAT = "Неверный формат ввода. Попробуйте еще раз:";
+    public static final String NOT_FOUND = "Задача с таким ID отсутствует в календаре.";
 
     public static Calendar calendar = new Calendar();
 
@@ -31,12 +32,15 @@ public class Main {
                                 break label;
                             }
                         case 2:
-                            removeTask(scanner);
+                            editTask(scanner);
                             break;
                         case 3:
-                            printTasksForTheDay(scanner);
+                            removeTask(scanner);
                             break;
                         case 4:
+                            printTasksForTheDay(scanner);
+                            break;
+                        case 5:
                             printDeletedTasks(scanner);
                             break;
                         case 0:
@@ -121,24 +125,41 @@ public class Main {
         return false;
     }
 
+    private static void editTask(Scanner scanner) {
+        scanner.nextLine();
+        System.out.println("========================================");
+        int id = enterId(scanner);
+        Task task = calendar.getTask(id);
+        if (task != null) {
+            System.out.println("Старое название задачи:");
+            System.out.println(task.getTitle());
+            System.out.println("Введите новое название (не вводите ничего, если не хотите менять)");
+            String title = scanner.nextLine();
+            System.out.println();
+
+            System.out.println("Старое описание задачи:");
+            System.out.println(task.getDescription());
+            System.out.println("Введите новое описание (не вводите ничего, если не хотите менять)");
+            String description = scanner.nextLine();
+            System.out.println();
+
+            calendar.editTask(id, title, description);
+            System.out.println("Задача успешно отредактирована!");
+        } else {
+            System.out.println(NOT_FOUND);
+        }
+        System.out.println("========================================");
+        System.out.println();
+    }
+
     private static void removeTask(Scanner scanner) {
         scanner.nextLine();
         System.out.println("========================================");
-        System.out.println("Введите ID удаляемой задачи:");
-        boolean shouldEnterAgain = true;
-        int id = 0;
-        while (shouldEnterAgain) {
-            try {
-                id = Integer.parseInt(scanner.nextLine());
-                shouldEnterAgain = false;
-            } catch (NumberFormatException e) {
-                System.out.println(WRONG_FORMAT);
-            }
-        }
+        int id = enterId(scanner);
         if (calendar.removeTask(id)) {
             System.out.println("Задача была успешно удалена!");
         } else {
-            System.out.println("Задача с таким ID отсутствует в календаре.");
+            System.out.println(NOT_FOUND);
         }
         System.out.println("========================================");
         System.out.println();
@@ -181,9 +202,25 @@ public class Main {
 
     private static void printMenu() {
         System.out.println("\t • 1. Добавить задачу\n" +
-                "\t • 2. Удалить задачу\n" +
-                "\t • 3. Получить задачи на указанный день\n" +
-                "\t • 4. Показать удаленные задачи\n" +
+                "\t • 2. Редактировать задачу\n" +
+                "\t • 3. Удалить задачу\n" +
+                "\t • 4. Получить задачи на указанный день\n" +
+                "\t • 5. Показать удаленные задачи\n" +
                 "\t • 0. Выход");
+    }
+
+    private static int enterId(Scanner scanner) {
+        System.out.println("Введите ID задачи:");
+        boolean shouldEnterAgain = true;
+        int id = -1;
+        while (shouldEnterAgain) {
+            try {
+                id = Integer.parseInt(scanner.nextLine());
+                shouldEnterAgain = false;
+            } catch (NumberFormatException e) {
+                System.out.println(WRONG_FORMAT);
+            }
+        }
+        return id;
     }
 }

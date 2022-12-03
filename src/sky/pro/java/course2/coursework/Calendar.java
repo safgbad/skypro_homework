@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static sky.pro.java.utility.ValueCheck.isStringNotNullAndNotBlank;
+
 public class Calendar {
     private final Map<Integer, Task> tasks;
 
@@ -17,8 +19,26 @@ public class Calendar {
         tasks = new HashMap<>();
     }
 
+    public Task getTask(int id) {
+        return tasks.get(id);
+    }
+
     public boolean addTask(Task task) {
         return tasks.put(task.getId(), task) == null;
+    }
+
+    public boolean editTask(int id, String title, String description) {
+        if (tasks.containsKey(id)) {
+            Task task = tasks.get(id);
+            if (isStringNotNullAndNotBlank(title)) {
+                task.setTitle(title);
+            }
+            if (isStringNotNullAndNotBlank(description)) {
+                task.setDescription(description);
+            }
+            return true;
+        }
+        return false;
     }
 
     public boolean removeTask(int id) {
