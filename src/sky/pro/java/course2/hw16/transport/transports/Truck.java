@@ -1,24 +1,29 @@
 package sky.pro.java.course2.hw16.transport.transports;
 
-import sky.pro.java.course2.hw16.driver.Driver;
-import sky.pro.java.course2.hw16.driver.drivers.DriverC;
+import sky.pro.java.course2.hw16.stuff.Queueable;
+import sky.pro.java.course2.hw16.stuff.driver.drivers.DriverC;
 import sky.pro.java.course2.hw16.transport.enums.LoadCapacity;
 import sky.pro.java.course2.hw16.transport.Transport;
 
-public class Truck extends Transport {
-    private static final String CLASS_STRING = "Грузовой автомобиль";
+public class Truck extends Transport implements Queueable {
+    public static final String CLASS_STRING = "Грузовой автомобиль";
     private static final Class<?> CLASS = DriverC.class;
 
     private LoadCapacity loadCapacity;
+    private boolean isInQueue;
 
-    public Truck(String brand, String model, Double engineVolume, Driver driver) {
+    public Truck(String brand, String model, Double engineVolume, DriverC driver) {
         super(brand, model, engineVolume, driver);
         this.loadCapacity = LoadCapacity.getRandom();
+        driver.setTruck(this);
+        isInQueue = false;
     }
 
-    public Truck(String brand, String model, Double engineVolume, Driver driver, LoadCapacity loadCapacity) {
+    public Truck(String brand, String model, Double engineVolume, DriverC driver, LoadCapacity loadCapacity) {
         super(brand, model, engineVolume, driver);
         this.loadCapacity = loadCapacity;
+        driver.setTruck(this);
+        isInQueue = false;
     }
 
 
@@ -55,7 +60,7 @@ public class Truck extends Transport {
             throw new RuntimeException(String.format("Необходимо указать тип прав для %s %s",
                     getBrand(), getModel()));
         }
-        System.out.printf("%s %s %s успешно прошел диагностику\n", CLASS_STRING, getBrand(), getModel());
+        System.out.printf("%s %s %s успешно прошел обслуживание\n", CLASS_STRING, getBrand(), getModel());
         return true;
     }
 
@@ -74,6 +79,16 @@ public class Truck extends Transport {
     public void showMaxSpeed() {
         System.out.printf("Максимальная скорость %s %s: %d км/ч\n", getBrand(), getModel(),
                 (int) (270 * Math.random()));
+    }
+
+    @Override
+    public boolean isInQueue() {
+        return isInQueue;
+    }
+
+    @Override
+    public void setIsInQueue(boolean isInQueue) {
+        this.isInQueue = isInQueue;
     }
 
     @Override

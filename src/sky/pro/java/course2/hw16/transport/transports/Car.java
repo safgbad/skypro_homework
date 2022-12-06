@@ -1,24 +1,29 @@
 package sky.pro.java.course2.hw16.transport.transports;
 
-import sky.pro.java.course2.hw16.driver.Driver;
-import sky.pro.java.course2.hw16.driver.drivers.DriverB;
+import sky.pro.java.course2.hw16.stuff.Queueable;
+import sky.pro.java.course2.hw16.stuff.driver.drivers.DriverB;
 import sky.pro.java.course2.hw16.transport.enums.Body;
 import sky.pro.java.course2.hw16.transport.Transport;
 
-public class Car extends Transport {
-    private static final String CLASS_STRING = "Легковой автомобиль";
+public class Car extends Transport implements Queueable {
+    public static final String CLASS_STRING = "Легковой автомобиль";
     private static final Class<?> CLASS = DriverB.class;
 
     private Body body;
+    private boolean isInQueue;
 
-    public Car(String brand, String model, Double engineVolume, Driver driver) {
+    public Car(String brand, String model, Double engineVolume, DriverB driver) {
         super(brand, model, engineVolume, driver);
         this.body = Body.getRandom();
+        driver.setCar(this);
+        isInQueue = false;
     }
 
-    public Car(String brand, String model, Double engineVolume, Driver driver, Body body) {
+    public Car(String brand, String model, Double engineVolume, DriverB driver, Body body) {
         super(brand, model, engineVolume, driver);
         this.body = body;
+        driver.setCar(this);
+        isInQueue = false;
     }
 
     public Body getBody() {
@@ -54,7 +59,7 @@ public class Car extends Transport {
             throw new RuntimeException(String.format("Необходимо указать тип прав для %s %s",
                     getBrand(), getModel()));
         }
-        System.out.printf("%s %s %s успешно прошел диагностику\n", CLASS_STRING, getBrand(), getModel());
+        System.out.printf("%s %s %s успешно прошел обслуживание\n", CLASS_STRING, getBrand(), getModel());
         return true;
     }
 
@@ -73,6 +78,16 @@ public class Car extends Transport {
     public void showMaxSpeed() {
         System.out.printf("Максимальная скорость %s %s: %d км/ч\n", getBrand(), getModel(),
                 (int) (270 * Math.random()));
+    }
+
+    @Override
+    public boolean isInQueue() {
+        return isInQueue;
+    }
+
+    @Override
+    public void setIsInQueue(boolean isInQueue) {
+        this.isInQueue = isInQueue;
     }
 
     @Override

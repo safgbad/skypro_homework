@@ -1,6 +1,8 @@
-package sky.pro.java.course2.hw16.driver;
+package sky.pro.java.course2.hw16.stuff.driver;
 
-import sky.pro.java.course2.hw16.utility.InputCheck;
+import sky.pro.java.utility.ValueCheck;
+
+import java.util.Objects;
 
 public abstract class Driver {
     private static final String DELIMITER = "----------";
@@ -13,7 +15,7 @@ public abstract class Driver {
     private Integer experience;
 
     public Driver(String fullName, Boolean doesHaveDrivingLicense, Integer experience) {
-        this.fullName = InputCheck.isStringNotNullAndNotBlank(fullName) ? fullName : DEFAULT_FULL_NAME;
+        this.fullName = ValueCheck.isStringNotNullAndNotBlank(fullName) ? fullName : DEFAULT_FULL_NAME;
         setDoesHaveDrivingLicense(doesHaveDrivingLicense);
         setExperience(experience);
     }
@@ -36,7 +38,20 @@ public abstract class Driver {
     }
 
     public void setExperience(Integer experience) {
-        this.experience = InputCheck.isNumberNotNullAndNotNegative(experience) ? experience : DEFAULT_EXPERIENCE;
+        this.experience = ValueCheck.isNumberNotNullAndNotNegative(experience) ? experience : DEFAULT_EXPERIENCE;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Driver driver = (Driver) o;
+        return fullName.equals(driver.fullName) && doesHaveDrivingLicense.equals(driver.doesHaveDrivingLicense) && experience.equals(driver.experience);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fullName, doesHaveDrivingLicense, experience);
     }
 
     @Override
@@ -51,7 +66,7 @@ public abstract class Driver {
         } else {
             stringBuilder.append("нет").append('\n');
         }
-        stringBuilder.append('\n').append(DELIMITER);
+        stringBuilder.append(DELIMITER);
         return stringBuilder.toString();
     }
 }

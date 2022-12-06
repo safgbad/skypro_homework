@@ -1,24 +1,25 @@
 package sky.pro.java.course2.hw16.transport.transports;
 
-import sky.pro.java.course2.hw16.driver.Driver;
-import sky.pro.java.course2.hw16.driver.drivers.DriverD;
+import sky.pro.java.course2.hw16.stuff.driver.drivers.DriverD;
 import sky.pro.java.course2.hw16.transport.enums.Capacity;
 import sky.pro.java.course2.hw16.transport.Transport;
 
 public class Bus extends Transport {
-    private static final String CLASS_STRING = "Автобус";
+    public static final String CLASS_STRING = "Автобус";
     private static final Class<?> CLASS = DriverD.class;
 
     private Capacity capacity;
 
-    public Bus(String BRAND, String MODEL, Double engineVolume, Driver driver) {
+    public Bus(String BRAND, String MODEL, Double engineVolume, DriverD driver) {
         super(BRAND, MODEL, engineVolume, driver);
         this.capacity = Capacity.getRandom();
+        driver.setBus(this);
     }
 
-    public Bus(String BRAND, String MODEL, Double engineVolume, Driver driver, Capacity capacity) {
+    public Bus(String BRAND, String MODEL, Double engineVolume, DriverD driver, Capacity capacity) {
         super(BRAND, MODEL, engineVolume, driver);
         this.capacity = capacity;
+        driver.setBus(this);
     }
 
     public Capacity getCapacity() {

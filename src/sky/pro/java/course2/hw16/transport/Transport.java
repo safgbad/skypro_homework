@@ -1,9 +1,11 @@
 package sky.pro.java.course2.hw16.transport;
 
-import sky.pro.java.course2.hw16.driver.Driver;
-import sky.pro.java.course2.hw16.utility.InputCheck;
+import sky.pro.java.course2.hw16.stuff.Mechanic;
+import sky.pro.java.course2.hw16.stuff.driver.Driver;
+import sky.pro.java.course2.hw16.sponsorship.Sponsor;
+import sky.pro.java.utility.ValueCheck;
 
-import java.util.Objects;
+import java.util.*;
 
 public abstract class Transport implements Competing {
     public static final String NO_TYPE = "Данных по транспортному средству недостаточно";
@@ -16,12 +18,16 @@ public abstract class Transport implements Competing {
     private final String model;
     private Double engineVolume;
     private Driver driver;
+    private final Set<Sponsor> sponsors;
+    private final Set<Mechanic> mechanics;
 
     public Transport(String brand, String model, Double engineVolume, Driver driver) {
-        this.brand = InputCheck.isStringNotNullAndNotBlank(brand) ? brand : DEFAULT_BRAND;
-        this.model = InputCheck.isStringNotNullAndNotBlank(model) ? model : DEFAULT_MODEL;
+        this.brand = ValueCheck.isStringNotNullAndNotBlank(brand) ? brand : DEFAULT_BRAND;
+        this.model = ValueCheck.isStringNotNullAndNotBlank(model) ? model : DEFAULT_MODEL;
         setEngineVolume(engineVolume);
         setDriver(driver);
+        sponsors = new HashSet<>();
+        mechanics = new HashSet<>();
     }
 
     public String getBrand() {
@@ -40,13 +46,37 @@ public abstract class Transport implements Competing {
         return driver;
     }
 
+    public Set<Sponsor> getSponsors() {
+        return sponsors;
+    }
+
+    public Set<Mechanic> getMechanics() {
+        return mechanics;
+    }
+
     public void setEngineVolume(Double engineVolume) {
-        this.engineVolume = InputCheck.isNumberNotNullAndNotNegative(engineVolume) ?
+        this.engineVolume = ValueCheck.isNumberNotNullAndNotNegative(engineVolume) ?
                 engineVolume : DEFAULT_ENGINE_VOLUME;
     }
 
     public void setDriver(Driver driver) {
         this.driver = driver;
+    }
+
+    public boolean addSponsor(Sponsor sponsor) {
+        if (sponsor != null
+                && sponsor.getDonations().stream().anyMatch(donation -> donation.getTransport().equals(this))) {
+            return sponsors.add(sponsor);
+        }
+        return false;
+    }
+
+    public boolean addMechanic(Mechanic mechanic) {
+        if (mechanic != null
+                && mechanic.getTransports().stream().anyMatch(transport -> transport.equals(this))) {
+            return mechanics.add(mechanic);
+        }
+        return false;
     }
 
     public abstract void startMoving();
@@ -61,21 +91,20 @@ public abstract class Transport implements Competing {
     }
 
     @Override
-    public String toString() {
-        return String.format("%s %s с двигателем объемом %.1f\n%s", brand, model, engineVolume, driver);
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Transport transport = (Transport) o;
-        return brand.equals(transport.brand) && model.equals(transport.model)
-                && engineVolume.equals(transport.engineVolume);
+        return brand.equals(transport.brand) && model.equals(transport.model) && engineVolume.equals(transport.engineVolume) && driver.equals(transport.driver);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(brand, model, engineVolume);
+        return Objects.hash(brand, model, engineVolume, driver);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s %s с двигателем объемом %.1f\n%s", brand, model, engineVolume, driver);
     }
 }
