@@ -8,7 +8,7 @@ public class Supermarket {
     public static final String CUSTOMER = "Customer";
     public static int NUMBER_OF_QUEUES = 2;
     public static final int CAPACITY = 5;
-    public static final ArrayList<BlockingQueue<String>> queues = new ArrayList<>();
+    public static final List<BlockingQueue<String>> queues = new ArrayList<>();
 
     public static void main(String[] args) {
         for (int i = 0; i < NUMBER_OF_QUEUES; i++) {
@@ -19,7 +19,7 @@ public class Supermarket {
     }
 
     public static void fillTheQueue(BlockingQueue<String> queue) {
-        int numberOfPeople = (int) (5 * Math.random());
+        int numberOfPeople = (int) (CAPACITY * Math.random());
         for (int i = 0; i <= numberOfPeople; i++) {
             queue.add(CUSTOMER);
         }
