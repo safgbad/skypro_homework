@@ -5,13 +5,15 @@ import java.util.Objects;
 public class Product {
     private final String name;
     private final Double price;
-    private final Double neededWeight;
+    private final Double neededAmount;
+    private final Boolean isWeighable;
     private boolean isBought;
 
-    public Product(String name, Double price, Double neededWeight) {
+    public Product(String name, Double price, Double neededAmount, Boolean isWeighable) {
         this.name = name;
         this.price = price;
-        this.neededWeight = neededWeight;
+        this.neededAmount = neededAmount;
+        this.isWeighable = isWeighable;
         isBought = false;
     }
 
@@ -23,8 +25,12 @@ public class Product {
         return price;
     }
 
-    public Double getNeededWeight() {
-        return neededWeight;
+    public Double getNeededAmount() {
+        return neededAmount;
+    }
+
+    public Boolean isWeighable() {
+        return isWeighable;
     }
 
     public boolean isBought() {
@@ -50,7 +56,10 @@ public class Product {
 
     @Override
     public String toString() {
-        return String.format("%s: %.1f кг (%.2f руб/кг)%s",
-                name, neededWeight, price, isBought ? " (КУПЛЕНО)" : "");
+        return String.format("%s: %s (%s)%s",
+                name,
+                neededAmount + (isWeighable ? " кг" : " шт"),
+                price + (isWeighable ? " руб/кг" : " руб/шт"),
+                isBought ? " (КУПЛЕНО)" : "");
     }
 }

@@ -2,18 +2,16 @@ package sky.pro.java.course2.hw20.products;
 
 import sky.pro.java.utility.ValueCheck;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class ProductList {
-    private final List<Product> productList;
+    private final Map<Product, Double> productList;
 
     public ProductList() {
-        productList = new ArrayList<>();
+        productList = new HashMap<>();
     }
 
-    public void addProduct(String name, Double price, Double neededWeight) {
+    public void addProduct(String name, Double price, Double neededAmount, Boolean isWeighable) {
         if (!ValueCheck.isStringNotNullAndNotBlank(name)) {
             throw new NullPointerException("Название должно быть заполнено!");
         }
@@ -23,24 +21,30 @@ public class ProductList {
         if (price == null) {
             throw new NullPointerException("Цена должна быть заполнена!");
         }
-        if (neededWeight == null) {
-            throw new NullPointerException("Необходимое количество должно быть указано!");
+        if (isWeighable == null) {
+            throw new NullPointerException("Укажите единицу измерения продукта!");
         }
-        Product product = new Product(name, price ,neededWeight);
-        if (productList.contains(product)) {
+        Product product;
+        product = new Product(name, price, Objects.requireNonNullElse(neededAmount, 1.0), isWeighable);
+        if (productList.containsKey(product)) {
             throw new IllegalArgumentException("Продукт \"" + name + "\" уже находится в списке!");
         }
-        productList.add(product);
+        productList.put(product, neededAmount);
     }
 
     public boolean removeProduct(String product) {
-        return productList.remove(new Product(product, null, null));
+        return productList.remove(new Product(product, null, null, null)) != null;
     }
 
     public boolean markProductAsBought(String product) {
-        int index = productList.indexOf(new Product(product, null, null));
-        if (index >= 0) {
-            productList.get(index).setBought(true);
+        Product targetProduct = null;
+        for (Product obj : productList.keySet()) {
+            if (obj.equals(new Product(product, null, null, null))) {
+                targetProduct = obj;
+            }
+        }
+        if (targetProduct != null) {
+            targetProduct.setBought(true);
             return true;
         }
         return false;
@@ -48,8 +52,8 @@ public class ProductList {
 
     public double sum() {
         double sum = 0.0;
-        for (Product product : productList) {
-            sum += product.getPrice() * product.getNeededWeight();
+        for (Product product : productList.keySet()) {
+            sum += product.getPrice() * product.getNeededAmount();
         }
         return sum;
     }
@@ -70,7 +74,7 @@ public class ProductList {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("Список продуктов:");
-        for (Product product : productList) {
+        for (Product product : productList.keySet()) {
             stringBuilder.append("\n\t • ").append(product);
         }
         return stringBuilder.toString();

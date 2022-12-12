@@ -16,16 +16,16 @@ public class Main {
     public static void main(String[] args) {
         // Receipts
         ProductList productList = new ProductList();
-        productList.addProduct("Яблоки", 59.90, 1.2);
-        productList.addProduct("Ветчина", 639.90, 0.4);
-        productList.addProduct("Хлеб", 45.90, 0.6);
+        productList.addProduct("Яблоки", 59.90, 1.2, true);
+        productList.addProduct("Ветчина", 639.90, 0.4, true);
+        productList.addProduct("Хлеб", 45.90, 0.6, true);
         productList.removeProduct("Яблоки");
         productList.markProductAsBought("Колбаса докторская");
         ReceiptBook receiptBook = new ReceiptBook();
         receiptBook.addReceipt(new Receipt("Сэндвич с ветчиной", productList));
         receiptBook.addReceipt(new Receipt("Сэндвич с курицей"));
-        receiptBook.getReceipt("Сэндвич с курицей").addIngredient("Хлеб", 45.90, 0.6);
-        receiptBook.getReceipt("Сэндвич с курицей").addIngredient("Курица", 350.0, 0.4);
+        receiptBook.getReceipt("Сэндвич с курицей").addIngredient("Хлеб", 45.90, 0.6, true);
+        receiptBook.getReceipt("Сэндвич с курицей").addIngredient("Курица", 350.0, 0.4, true);
         System.out.println(receiptBook);
 //        receiptBook.addReceipt(new Receipt("Сэндвич с курицей")); // throw
         
