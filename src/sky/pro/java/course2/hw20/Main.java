@@ -3,8 +3,8 @@ package sky.pro.java.course2.hw20;
 import sky.pro.java.course2.hw20.passports.Passport;
 import sky.pro.java.course2.hw20.passports.PassportDatabase;
 import sky.pro.java.course2.hw20.products.ProductList;
-import sky.pro.java.course2.hw20.products.Receipt;
-import sky.pro.java.course2.hw20.products.ReceiptBook;
+import sky.pro.java.course2.hw20.products.Recipe;
+import sky.pro.java.course2.hw20.products.RecipeBook;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -21,12 +21,12 @@ public class Main {
         productList.addProduct("Хлеб", 45.90, 0.6);
         productList.removeProduct("Яблоки");
         productList.markProductAsBought("Колбаса докторская");
-        ReceiptBook receiptBook = new ReceiptBook();
-        receiptBook.addReceipt(new Receipt("Сэндвич с ветчиной", productList));
-        receiptBook.addReceipt(new Receipt("Сэндвич с курицей"));
-        receiptBook.getReceipt("Сэндвич с курицей").addIngredient("Хлеб", 45.90, 0.6);
-        receiptBook.getReceipt("Сэндвич с курицей").addIngredient("Курица", 350.0, 0.4);
-        System.out.println(receiptBook);
+        RecipeBook recipeBook = new RecipeBook();
+        recipeBook.addReceipt(new Recipe("Сэндвич с ветчиной", productList));
+        recipeBook.addReceipt(new Recipe("Сэндвич с курицей"));
+        recipeBook.getReceipt("Сэндвич с курицей").addIngredient("Хлеб", 45.90, 0.6);
+        recipeBook.getReceipt("Сэндвич с курицей").addIngredient("Курица", 350.0, 0.4);
+        System.out.println(recipeBook);
 //        receiptBook.addReceipt(new Receipt("Сэндвич с курицей")); // throw
         
         // numbers

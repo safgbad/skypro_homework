@@ -2,18 +2,18 @@ package sky.pro.java.course2.hw20.products;
 
 import java.util.Objects;
 
-public class Receipt {
+public class Recipe {
     private final ProductList ingredients;
     private Double ingredientsCost;
     private final String name;
 
-    public Receipt(String name) {
+    public Recipe(String name) {
         ingredients = new ProductList();
         ingredientsCost = 0.0;
         this.name = name;
     }
 
-    public Receipt(String name, ProductList ingredients) {
+    public Recipe(String name, ProductList ingredients) {
         this.ingredients = ingredients;
         ingredientsCost = ingredients.sum();
         this.name = name;
@@ -28,8 +28,8 @@ public class Receipt {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Receipt receipt = (Receipt) o;
-        return name.equals(receipt.name);
+        Recipe recipe = (Recipe) o;
+        return name.equals(recipe.name);
     }
 
     @Override

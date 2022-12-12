@@ -2,37 +2,37 @@ package sky.pro.java.course2.hw20.products;
 
 import java.util.ArrayList;
 
-public class ReceiptBook {
-    private final ArrayList<Receipt> receipts;
+public class RecipeBook {
+    private final ArrayList<Recipe> recipes;
 
-    public ReceiptBook() {
-        receipts = new ArrayList<>();
+    public RecipeBook() {
+        recipes = new ArrayList<>();
     }
 
-    public Receipt getReceipt(String receiptName) {
-        int index = receipts.indexOf(new Receipt(receiptName));
+    public Recipe getReceipt(String receiptName) {
+        int index = recipes.indexOf(new Recipe(receiptName));
         if (index >= 0) {
-            return receipts.get(index);
+            return recipes.get(index);
         }
         return null;
     }
 
-    public void addReceipt(Receipt receipt) {
-        if (receipts.contains(receipt)) {
+    public void addReceipt(Recipe recipe) {
+        if (recipes.contains(recipe)) {
             throw new IllegalArgumentException("В книге уже есть такой рецепт!");
         }
-        receipts.add(receipt);
+        recipes.add(recipe);
     }
 
     public boolean removeReceipt(String receiptName) {
-        return receipts.remove(new Receipt(receiptName));
+        return recipes.remove(new Recipe(receiptName));
     }
 
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("Книга рецептов\n========================================");
-        for (Receipt receipt : receipts) {
-            stringBuilder.append('\n').append(receipt).append('\n');
+        for (Recipe recipe : recipes) {
+            stringBuilder.append('\n').append(recipe).append('\n');
         }
         stringBuilder.append('\n').append("========================================");
         return stringBuilder.toString();
