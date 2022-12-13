@@ -19,8 +19,8 @@ public class Recipe {
         this.name = name;
     }
 
-    public void addIngredient(String name, Double price, Double neededWeight) {
-        ingredients.addProduct(name, price, neededWeight);
+    public void addIngredient(String name, Double price, Double neededWeight, Boolean isWeighable) {
+        ingredients.addProduct(name, price, neededWeight, isWeighable);
         ingredientsCost = ingredients.sum();
     }
 
