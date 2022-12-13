@@ -7,12 +7,11 @@ import sky.pro.java.course2.hw16.stuff.driver.drivers.*;
 import sky.pro.java.course2.hw16.transport.Transport;
 import sky.pro.java.course2.hw16.transport.transports.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
-        List<Transport> transports = new ArrayList<>();
+        Set<Transport> transports = new HashSet<>();
         // buses
         transports.add(new Bus("Ikarus", "SP1", 9.0,
                 new DriverD("Name7", true, 7)));
@@ -36,30 +35,32 @@ public class Main {
                 new DriverC("Name6", true, 6)));
         // sponsors and donations
         Sponsor sponsor1 = new Sponsor("Sponsor 1");
-        sponsor1.makeDonation(transports.get(0), 100000.0);
-        sponsor1.makeDonation(transports.get(1), 200000.0);
-        sponsor1.makeDonation(transports.get(2), 300000.0);
+        Iterator<Transport> iterator = transports.iterator();
+        sponsor1.makeDonation(iterator.next(), 100000.0);
+        sponsor1.makeDonation(iterator.next(), 200000.0);
+        sponsor1.makeDonation(iterator.next(), 300000.0);
         Sponsor sponsor2 = new Sponsor("Sponsor 2");
-        sponsor2.makeDonation(transports.get(1), 400000.0);
-        sponsor2.makeDonation(transports.get(2), 500000.0);
-        sponsor2.makeDonation(transports.get(3), 600000.0);
+        sponsor2.makeDonation(iterator.next(), 400000.0);
+        sponsor2.makeDonation(iterator.next(), 500000.0);
+        sponsor2.makeDonation(iterator.next(), 600000.0);
         Sponsor sponsor3 = new Sponsor("Sponsor 3");
-        sponsor3.makeDonation(transports.get(2), 700000.0);
-        sponsor3.makeDonation(transports.get(3), 800000.0);
-        sponsor3.makeDonation(transports.get(4), 900000.0);
+        sponsor3.makeDonation(iterator.next(), 700000.0);
+        sponsor3.makeDonation(iterator.next(), 800000.0);
+        sponsor3.makeDonation(iterator.next(), 900000.0);
         // mechanics
         Mechanic mechanic1 = new Mechanic("Mechanic 1", "Company 1", true, false, false);
-        mechanic1.addTransport(transports.get(3));
-        mechanic1.addTransport(transports.get(5));
-        mechanic1.addTransport(transports.get(1)); // nope
+        iterator = transports.iterator();
+        mechanic1.addTransport(iterator.next());
+        mechanic1.addTransport(iterator.next());
+        mechanic1.addTransport(iterator.next()); // nope
         Mechanic mechanic2 = new Mechanic("Mechanic 2", "Company 2", true, true, false);
-        mechanic2.addTransport(transports.get(4));
-        mechanic2.addTransport(transports.get(7));
-        mechanic2.addTransport(transports.get(5));
+        mechanic2.addTransport(iterator.next());
+        mechanic2.addTransport(iterator.next());
+        mechanic2.addTransport(iterator.next());
         Mechanic mechanic3 = new Mechanic("Mechanic 3", "Company 3", true, true, true);
-        mechanic3.addTransport(transports.get(2));
-        mechanic3.addTransport(transports.get(6));
-        mechanic3.addTransport(transports.get(5));
+        mechanic3.addTransport(iterator.next());
+        mechanic3.addTransport(iterator.next());
+        mechanic3.addTransport(iterator.next());
         // output
         printInfo(transports);
         System.out.println();
@@ -75,7 +76,7 @@ public class Main {
         System.out.println(serviceStation);
     }
 
-    public static void printInfo(List<Transport> transports) {
+    public static void printInfo(Set<Transport> transports) {
         for (Transport transport : transports) {
             System.out.println("========================================");
             System.out.println(transport);

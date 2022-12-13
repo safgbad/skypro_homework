@@ -3,8 +3,8 @@ package sky.pro.java.course2.hw16.stuff;
 import sky.pro.java.course2.hw16.transport.Transport;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 
 public class ServiceStation {
     private final Queue<Queueable> queue;
@@ -22,7 +22,7 @@ public class ServiceStation {
         return false;
     }
 
-    public <T extends Transport> void addToQueue(List<T> transports) {
+    public <T extends Transport> void addToQueue(Set<T> transports) {
         for (T transport : transports) {
             if (transport instanceof Queueable) {
                 addToQueue((Transport & Queueable) transport);
