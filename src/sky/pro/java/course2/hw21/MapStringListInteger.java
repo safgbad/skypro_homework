@@ -15,10 +15,10 @@ public class MapStringListInteger {
             map.put(str, list);
             System.out.println('"' + str + "\" -> " + list);
         }
-        Map<String, Integer> map_new = map.entrySet().stream()
+        Map<String, Integer> mapNew = map.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> sum(entry.getValue())));
         System.out.println();
-        for (Map.Entry<String, Integer> entry : map_new.entrySet()) {
+        for (Map.Entry<String, Integer> entry : mapNew.entrySet()) {
             System.out.println('"' + entry.getKey() + "\" -> " + entry.getValue());
         }
     }
