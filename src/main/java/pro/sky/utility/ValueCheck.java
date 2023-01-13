@@ -11,6 +11,10 @@ public class ValueCheck {
         return num != null && num.doubleValue() >= 0;
     }
 
+    public static <T extends Number> boolean isNumberNotNullAndPositive (T num) {
+        return num != null && num.doubleValue() > 0;
+    }
+
     public static boolean isStringRussian(String str) {
         String regex = "^([А-Яа-я0-9\t ]|\\p{Punct})+";
         Pattern pattern = Pattern.compile(regex);
