@@ -18,7 +18,7 @@ public class Recipe {
 
     public static int counter = 0;
 
-    private final Integer id;
+    private Integer id;
     private String name;
     private Integer cookingTime;
     private List<Ingredient> ingredients;
@@ -33,6 +33,12 @@ public class Recipe {
         setCookingTime(cookingTime);
         setIngredients(ingredients);
         setSteps(steps);
+    }
+
+    public void setId(Integer id) {
+        if (isNumberNotNullAndPositive(id)) {
+            this.id = id;
+        }
     }
 
     public void setName(String name) {

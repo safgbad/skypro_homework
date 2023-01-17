@@ -30,10 +30,19 @@ public class IngredientsServiceImpl implements IngredientsService {
     }
 
     @Override
+    public List<Ingredient> getAllIngredients() {
+        return ingredients.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(Map.Entry::getValue)
+                .toList();
+    }
+
+    @Override
     public Ingredient updateIngredient(int number, Ingredient ingredient) {
         if (!ingredients.containsKey(number)) {
             return null;
         }
+        ingredient.setId(number);
 
         return ingredients.put(number, ingredient);
     }
@@ -42,13 +51,4 @@ public class IngredientsServiceImpl implements IngredientsService {
     public Ingredient deleteIngredient(int number) {
         return ingredients.remove(number);
     }
-
-    @Override
-    public List<Ingredient> getAllIngredients() {
-        return ingredients.entrySet().stream()
-                .sorted(Map.Entry.comparingByKey())
-                .map(Map.Entry::getValue)
-                .toList();
-    }
-
 }

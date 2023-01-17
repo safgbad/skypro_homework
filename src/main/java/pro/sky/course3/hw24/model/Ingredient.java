@@ -31,6 +31,12 @@ public class Ingredient {
         setMeasureUnit(measureUnit);
     }
 
+    public void setId(Integer id) {
+        if (isNumberNotNullAndPositive(id)) {
+            this.id = id;
+        }
+    }
+
     public void setName(String name) {
         if (isStringNotNullAndNotBlank(name)) {
             this.name = name;
