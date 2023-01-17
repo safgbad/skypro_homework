@@ -5,22 +5,44 @@ import pro.sky.course3.hw24.model.Ingredient;
 import pro.sky.course3.hw24.services.IngredientsService;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
 public class IngredientsServiceImpl implements IngredientsService {
-    private static int counter = 0;
-
     private final Map<Integer, Ingredient> ingredients = new LinkedHashMap<>();
 
     @Override
     public int addIngredient(Ingredient ingredient) {
-        ingredients.put(++counter, ingredient);
-        return counter;
+        ingredients.put(ingredient.getId(), ingredient);
+
+        return ingredient.getId();
     }
 
     @Override
     public Ingredient getIngredient(int number) {
         return ingredients.get(number);
+    }
+
+    @Override
+    public Ingredient updateIngredient(int number, Ingredient ingredient) {
+        if (!ingredients.containsKey(number)) {
+            return null;
+        }
+
+        return ingredients.put(number, ingredient);
+    }
+
+    @Override
+    public Ingredient deleteIngredient(int number) {
+        return ingredients.remove(number);
+    }
+
+    @Override
+    public List<Ingredient> getAllIngredients() {
+        return ingredients.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(Map.Entry::getValue)
+                .toList();
     }
 }

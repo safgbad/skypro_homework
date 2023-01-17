@@ -1,7 +1,5 @@
 package pro.sky.course3.hw24.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.Getter;
 
@@ -11,26 +9,25 @@ import java.util.Objects;
 
 import static pro.sky.utility.ValueCheck.*;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 @Getter
 public class Recipe {
     private static final String DEFAULT_NAME = "<RECIPE_NAME>";
     private static final int DEFAULT_COOKING_TIME = 10;
 
-    @JsonProperty("name")
+    public static int counter = 0;
+
+    private final Integer id;
     private String name;
-    @JsonProperty("cookingTime")
     private int cookingTime;
-    @JsonProperty("ingredients")
     private List<Ingredient> ingredients;
-    @JsonProperty("steps")
     private List<String> steps;
 
     public Recipe(String name,
                   Integer cookingTime,
                   List<Ingredient> ingredients,
                   List<String> steps) {
+        id = ++counter;
         setName(name);
         setCookingTime(cookingTime);
         setIngredients(ingredients);
