@@ -16,7 +16,7 @@ public class Ingredient {
 
     private static int counter = 0;
 
-    private final Integer id;
+    private Integer id;
     private String name;
     private Integer amount;
     private String measureUnit;

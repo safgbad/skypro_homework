@@ -10,10 +10,15 @@ import java.util.Map;
 
 @Service
 public class IngredientsServiceImpl implements IngredientsService {
-    private final Map<Integer, Ingredient> ingredients = new LinkedHashMap<>();
+    public static final Map<Integer, Ingredient> ingredients = new LinkedHashMap<>();
 
     @Override
     public int addIngredient(Ingredient ingredient) {
+        for (Ingredient ingr : ingredients.values()) {
+            if (ingr.equals(ingredient)) {
+                return ingr.getId();
+            }
+        }
         ingredients.put(ingredient.getId(), ingredient);
 
         return ingredient.getId();
@@ -45,4 +50,5 @@ public class IngredientsServiceImpl implements IngredientsService {
                 .map(Map.Entry::getValue)
                 .toList();
     }
+
 }

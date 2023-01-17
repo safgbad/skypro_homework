@@ -19,7 +19,7 @@ public class Recipe {
 
     private final Integer id;
     private String name;
-    private int cookingTime;
+    private Integer cookingTime;
     private List<Ingredient> ingredients;
     private List<String> steps;
 
@@ -56,5 +56,19 @@ public class Recipe {
 
     public void setSteps(List<String> steps) {
         this.steps = Objects.requireNonNullElseGet(steps, ArrayList::new);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Recipe recipe = (Recipe) o;
+        return Objects.equals(cookingTime, recipe.cookingTime)
+                && Objects.equals(name, recipe.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, cookingTime);
     }
 }

@@ -10,4 +10,5 @@ public interface RecipesService {
     Recipe updateRecipe(int number, Recipe recipe);
     Recipe deleteRecipe(int number);
     List<Recipe> getAllRecipes(long page, long numberOfRecipesOnPage);
+    List<Recipe> searchByIngredientIds(List<Integer> ingredientIds);
 }

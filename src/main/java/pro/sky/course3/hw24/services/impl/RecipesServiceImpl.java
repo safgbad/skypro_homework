@@ -1,19 +1,26 @@
 package pro.sky.course3.hw24.services.impl;
 
 import org.springframework.stereotype.Service;
+import pro.sky.course3.hw24.model.Ingredient;
 import pro.sky.course3.hw24.model.Recipe;
 import pro.sky.course3.hw24.services.RecipesService;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static pro.sky.course3.hw24.util.Utils.addNewIngredients;
 
 @Service
 public class RecipesServiceImpl implements RecipesService {
-    private final Map<Integer, Recipe> recipes = new LinkedHashMap<>();
+    private static final Map<Integer, Recipe> recipes = new LinkedHashMap<>();
 
     @Override
     public int addRecipe(Recipe recipe) {
+        for (Recipe rcp : recipes.values()) {
+            if (rcp.equals(recipe)) {
+                return rcp.getId();
+            }
+        }
+        addNewIngredients(recipe);
         recipes.put(recipe.getId(), recipe);
 
         return recipe.getId();
@@ -26,9 +33,8 @@ public class RecipesServiceImpl implements RecipesService {
 
     @Override
     public Recipe updateRecipe(int number, Recipe recipe) {
-        if (!recipes.containsKey(number)) {
-            return null;
-        }
+        if (!recipes.containsKey(number)) return null;
+        addNewIngredients(recipe);
 
         return recipes.put(number, recipe);
     }
@@ -45,6 +51,18 @@ public class RecipesServiceImpl implements RecipesService {
                 .skip((page - 1) * numberOfRecipesOnPage)
                 .limit(numberOfRecipesOnPage)
                 .map(Map.Entry::getValue)
+                .toList();
+    }
+
+    @Override
+    public List<Recipe> searchByIngredientIds(List<Integer> ingredientIds) {
+        return recipes.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(Map.Entry::getValue)
+                .filter(recipe -> new HashSet<>(recipe.getIngredients().stream()
+                        .map(Ingredient::getId)
+                        .toList())
+                        .containsAll(ingredientIds))
                 .toList();
     }
 }

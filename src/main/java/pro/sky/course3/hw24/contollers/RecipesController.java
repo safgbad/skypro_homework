@@ -55,8 +55,18 @@ public class RecipesController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllRecipes(@RequestParam long page) {
+    public ResponseEntity<?> getAllRecipes(@RequestParam(defaultValue = "1") long page) {
         List<Recipe> recipes = recipesService.getAllRecipes(page, NUMBER_OF_RECIPES_ON_PAGE);
+        if (recipes.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(recipes);
+    }
+
+    @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> searchByIngredientIds(@RequestBody List<Integer> ingredientIds) {
+        List<Recipe> recipes = recipesService.searchByIngredientIds(ingredientIds);
         if (recipes.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
