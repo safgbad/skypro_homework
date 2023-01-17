@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static pro.sky.utility.ValueCheck.*;
+import static pro.sky.utility.ValueCheck.isStringNotNullAndNotBlank;
+import static pro.sky.utility.ValueCheck.isNumberNotNullAndPositive;
 
 @Data
 @Getter

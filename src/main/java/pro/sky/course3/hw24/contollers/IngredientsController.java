@@ -2,7 +2,16 @@ package pro.sky.course3.hw24.contollers;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+
 import pro.sky.course3.hw24.model.Ingredient;
 import pro.sky.course3.hw24.services.IngredientsService;
 
@@ -32,6 +41,16 @@ public class IngredientsController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping
+    public ResponseEntity<?> getAllIngredients() {
+        List<Ingredient> ingredients = ingredientsService.getAllIngredients();
+        if (ingredients.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(ingredients);
+    }
+
     @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateIngredient(@PathVariable int id, @RequestBody Ingredient ingredient) {
         Ingredient oldIngredient = ingredientsService.updateIngredient(id, ingredient);
@@ -50,15 +69,5 @@ public class IngredientsController {
         }
 
         return ResponseEntity.ok("Ingredient #" + id + " has been deleted");
-    }
-
-    @GetMapping
-    public ResponseEntity<?> getAllIngredients() {
-        List<Ingredient> ingredients = ingredientsService.getAllIngredients();
-        if (ingredients.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-
-        return ResponseEntity.ok(ingredients);
     }
 }

@@ -2,7 +2,18 @@ package pro.sky.course3.hw24.contollers;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+
 import pro.sky.course3.hw24.model.Recipe;
 import pro.sky.course3.hw24.services.RecipesService;
 
@@ -34,6 +45,36 @@ public class RecipesController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping
+    public ResponseEntity<?> getAllRecipes(@RequestParam(defaultValue = "1") long page) {
+        List<Recipe> recipes = recipesService.getAllRecipes(page, NUMBER_OF_RECIPES_ON_PAGE);
+        if (recipes.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(recipes);
+    }
+
+    @GetMapping(path = "/search")
+    public ResponseEntity<?> searchByIngredientIds(@RequestParam(required = false) Integer ingredientId) {
+        List<Recipe> recipes = recipesService.searchByIngredientIds(List.of(ingredientId));
+        if (recipes.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(recipes);
+    }
+
+    @GetMapping(path = "/search", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> searchByIngredientIds(@RequestBody List<Integer> ingredientIds) {
+        List<Recipe> recipes = recipesService.searchByIngredientIds(ingredientIds);
+        if (recipes.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(recipes);
+    }
+
     @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateRecipe(@PathVariable int id, @RequestBody Recipe recipe) {
         Recipe oldRecipe = recipesService.updateRecipe(id, recipe);
@@ -52,25 +93,5 @@ public class RecipesController {
         }
 
         return ResponseEntity.ok("Recipe #" + id + " has been deleted");
-    }
-
-    @GetMapping
-    public ResponseEntity<?> getAllRecipes(@RequestParam(defaultValue = "1") long page) {
-        List<Recipe> recipes = recipesService.getAllRecipes(page, NUMBER_OF_RECIPES_ON_PAGE);
-        if (recipes.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-
-        return ResponseEntity.ok(recipes);
-    }
-
-    @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> searchByIngredientIds(@RequestBody List<Integer> ingredientIds) {
-        List<Recipe> recipes = recipesService.searchByIngredientIds(ingredientIds);
-        if (recipes.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-
-        return ResponseEntity.ok(recipes);
     }
 }
