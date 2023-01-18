@@ -27,12 +27,12 @@ public class IngredientsController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addIngredient(@RequestBody Ingredient ingredient) {
+    public ResponseEntity<String> addIngredient(@RequestBody Ingredient ingredient) {
         return ResponseEntity.ok("Ingredient ID: " + ingredientsService.addIngredient(ingredient));
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<?> getIngredient(@PathVariable int id) {
+    public ResponseEntity<Ingredient> getIngredient(@PathVariable int id) {
         Ingredient result = ingredientsService.getIngredient(id);
         if (result == null) {
             return ResponseEntity.notFound().build();
@@ -42,7 +42,7 @@ public class IngredientsController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllIngredients() {
+    public ResponseEntity<List<Ingredient>> getAllIngredients() {
         List<Ingredient> ingredients = ingredientsService.getAllIngredients();
         if (ingredients.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -52,7 +52,7 @@ public class IngredientsController {
     }
 
     @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateIngredient(@PathVariable int id, @RequestBody Ingredient ingredient) {
+    public ResponseEntity<String> updateIngredient(@PathVariable int id, @RequestBody Ingredient ingredient) {
         Ingredient oldIngredient = ingredientsService.updateIngredient(id, ingredient);
         if (oldIngredient == null) {
             return ResponseEntity.notFound().build();
@@ -62,7 +62,7 @@ public class IngredientsController {
     }
 
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<?> deleteIngredient(@PathVariable int id) {
+    public ResponseEntity<String> deleteIngredient(@PathVariable int id) {
         Ingredient deletedIngredient = ingredientsService.deleteIngredient(id);
         if (deletedIngredient == null) {
             return ResponseEntity.notFound().build();
