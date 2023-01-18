@@ -159,7 +159,7 @@ public class RecipesController {
             )
     })
     @GetMapping(path = "/search")
-    public ResponseEntity<?> searchByIngredientIds(@RequestParam(required = false) Integer ingredientId) {
+    public ResponseEntity<List<Recipe>> searchByIngredientIds(@RequestParam(required = false) Integer ingredientId) {
         List<Recipe> recipes = recipesService.searchByIngredientIds(List.of(ingredientId));
         if (recipes.isEmpty()) {
             return ResponseEntity.noContent().build();
