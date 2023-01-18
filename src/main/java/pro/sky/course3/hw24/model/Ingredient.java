@@ -1,19 +1,16 @@
 package pro.sky.course3.hw24.model;
 
-import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-import java.util.Objects;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import static pro.sky.utility.ValueCheck.isStringNotNullAndNotBlank;
-import static pro.sky.utility.ValueCheck.isNumberNotNullAndPositive;
-
-@Data
 @Getter
+@Setter
+@ToString
 public class Ingredient {
-    private static final String DEFAULT_NAME = "<INGREDIENT_NAME>";
-    private static final int DEFAULT_AMOUNT = 1;
-    private static final String DEFAULT_MEASURE_UNIT = "г";
 
     private static int counter = 0;
 
@@ -31,49 +28,26 @@ public class Ingredient {
         setMeasureUnit(measureUnit);
     }
 
-    public void setId(Integer id) {
-        if (isNumberNotNullAndPositive(id)) {
-            this.id = id;
-        }
-    }
-
-    public void setName(String name) {
-        if (isStringNotNullAndNotBlank(name)) {
-            this.name = name;
-        } else {
-            this.name = DEFAULT_NAME;
-        }
-    }
-
-    public void setAmount(Integer amount) {
-        if (isNumberNotNullAndPositive(amount)) {
-            this.amount = amount;
-        } else {
-            this.amount = 1;
-        }
-    }
-
-    public void setMeasureUnit(String measureUnit) {
-        if (isStringNotNullAndNotBlank(measureUnit)) {
-            this.measureUnit = measureUnit;
-        } else {
-            this.measureUnit = DEFAULT_MEASURE_UNIT;
-        }
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Ingredient that = (Ingredient) o;
+        Ingredient ingredient = (Ingredient) o;
+        EqualsBuilder eb = new EqualsBuilder();
+        eb.append(name, ingredient.name)
+                .append(amount, ingredient.amount)
+                .append(measureUnit, ingredient.measureUnit);
 
-        return Objects.equals(name, that.name)
-                && Objects.equals(amount, that.amount)
-                && Objects.equals(measureUnit, that.measureUnit);
+        return eb.isEquals();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, amount, measureUnit);
+        HashCodeBuilder hb = new HashCodeBuilder();
+        hb.append(name)
+                .append(amount)
+                .append(measureUnit);
+
+        return hb.toHashCode();
     }
 }
