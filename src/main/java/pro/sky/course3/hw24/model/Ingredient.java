@@ -1,56 +1,53 @@
 package pro.sky.course3.hw24.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-import static pro.sky.utility.ValueCheck.*;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@Data
 @Getter
+@Setter
+@ToString
 public class Ingredient {
-    private static final String DEFAULT_NAME = "<INGREDIENT_NAME>";
-    private static final int DEFAULT_AMOUNT = 1;
-    private static final String DEFAULT_MEASURE_UNIT = "г";
 
-    @JsonProperty("name")
+    private static int counter = 0;
+
+    private Integer id;
     private String name;
-    @JsonProperty("amount")
-    private int amount;
-    @JsonProperty("measureUnit")
+    private Integer amount;
     private String measureUnit;
 
     public Ingredient(String name,
                       Integer amount,
                       String measureUnit) {
+        id = ++counter;
         setName(name);
         setAmount(amount);
         setMeasureUnit(measureUnit);
     }
 
-    public void setName(String name) {
-        if (isStringNotNullAndNotBlank(name)) {
-            this.name = name;
-        } else {
-            this.name = DEFAULT_NAME;
-        }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Ingredient ingredient = (Ingredient) o;
+        EqualsBuilder eb = new EqualsBuilder();
+        eb.append(name, ingredient.name)
+                .append(amount, ingredient.amount)
+                .append(measureUnit, ingredient.measureUnit);
+
+        return eb.isEquals();
     }
 
-    public void setAmount(Integer amount) {
-        if (isNumberNotNullAndPositive(amount)) {
-            this.amount = amount;
-        } else {
-            this.amount = 1;
-        }
-    }
+    @Override
+    public int hashCode() {
+        HashCodeBuilder hb = new HashCodeBuilder();
+        hb.append(name)
+                .append(amount)
+                .append(measureUnit);
 
-    public void setMeasureUnit(String measureUnit) {
-        if (isStringNotNullAndNotBlank(measureUnit)) {
-            this.measureUnit = measureUnit;
-        } else {
-            this.measureUnit = DEFAULT_MEASURE_UNIT;
-        }
+        return hb.toHashCode();
     }
 }

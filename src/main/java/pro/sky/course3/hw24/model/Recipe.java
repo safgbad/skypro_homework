@@ -1,63 +1,56 @@
 package pro.sky.course3.hw24.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-import java.util.ArrayList;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import java.util.List;
-import java.util.Objects;
 
-import static pro.sky.utility.ValueCheck.*;
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-@Data
 @Getter
+@Setter
+@ToString
 public class Recipe {
-    private static final String DEFAULT_NAME = "<RECIPE_NAME>";
-    private static final int DEFAULT_COOKING_TIME = 10;
 
-    @JsonProperty("name")
+    public static int counter = 0;
+
+    private Integer id;
     private String name;
-    @JsonProperty("cookingTime")
-    private int cookingTime;
-    @JsonProperty("ingredients")
+    private Integer cookingTime;
     private List<Ingredient> ingredients;
-    @JsonProperty("steps")
     private List<String> steps;
 
     public Recipe(String name,
                   Integer cookingTime,
                   List<Ingredient> ingredients,
                   List<String> steps) {
+        id = ++counter;
         setName(name);
         setCookingTime(cookingTime);
         setIngredients(ingredients);
         setSteps(steps);
     }
 
-    public void setName(String name) {
-        if (isStringNotNullAndNotBlank(name)) {
-            this.name = name;
-        } else {
-            this.name = DEFAULT_NAME;
-        }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Recipe recipe = (Recipe) o;
+        EqualsBuilder eb = new EqualsBuilder();
+        eb.append(cookingTime, recipe.cookingTime)
+                .append(name, recipe.name);
+
+        return eb.isEquals();
     }
 
-    public void setCookingTime(Integer cookingTime) {
-        if (isNumberNotNullAndPositive(cookingTime)) {
-            this.cookingTime = cookingTime;
-        } else {
-            this.cookingTime = DEFAULT_COOKING_TIME;
-        }
-    }
+    @Override
+    public int hashCode() {
+        HashCodeBuilder hb = new HashCodeBuilder();
+        hb.append(cookingTime)
+                .append(name);
 
-    public void setIngredients(List<Ingredient> ingredients) {
-        this.ingredients = Objects.requireNonNullElseGet(ingredients, ArrayList::new);
-    }
-
-    public void setSteps(List<String> steps) {
-        this.steps = Objects.requireNonNullElseGet(steps, ArrayList::new);
+        return hb.toHashCode();
     }
 }
