@@ -1,16 +1,45 @@
 package pro.sky.course3.hw24.services.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import pro.sky.course3.hw24.model.Ingredient;
+import pro.sky.course3.hw24.services.FilesService;
 import pro.sky.course3.hw24.services.IngredientsService;
 
-import java.util.LinkedHashMap;
-import java.util.List;
+import javax.annotation.PostConstruct;
+
 import java.util.Map;
+import java.util.LinkedHashMap;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class IngredientsServiceImpl implements IngredientsService {
-    public static final Map<Integer, Ingredient> ingredients = new LinkedHashMap<>();
+    private static Integer counter = 0;
+
+    public static Map<Integer, Ingredient> ingredients = new LinkedHashMap<>();
+
+    @Value("${name.of.ingredients.data.file}")
+    private String ingredientsDataFileName;
+
+    private final FilesService filesService;
+
+    public IngredientsServiceImpl(FilesService filesService) {
+        this.filesService = filesService;
+    }
+
+    @PostConstruct
+    private void init() {
+        readFromFile();
+        if (!ingredients.isEmpty()) {
+            counter = Collections.max(ingredients.keySet());
+        }
+    }
 
     @Override
     public int addIngredient(Ingredient ingredient) {
@@ -19,7 +48,9 @@ public class IngredientsServiceImpl implements IngredientsService {
                 return ingr.getId();
             }
         }
+        ingredient.setId(++counter);
         ingredients.put(ingredient.getId(), ingredient);
+        saveToFile();
 
         return ingredient.getId();
     }
@@ -43,12 +74,40 @@ public class IngredientsServiceImpl implements IngredientsService {
             return null;
         }
         ingredient.setId(number);
+        Ingredient result = ingredients.put(number, ingredient);
+        saveToFile();
 
-        return ingredients.put(number, ingredient);
+        return result;
     }
 
     @Override
     public Ingredient deleteIngredient(int number) {
-        return ingredients.remove(number);
+        Ingredient result = ingredients.remove(number);
+        if (result != null) {
+            saveToFile();
+        }
+
+        return result;
+    }
+
+    private void saveToFile() {
+        try {
+            String json = new ObjectMapper().writeValueAsString(ingredients);
+            filesService.saveToJsonFile(json, ingredientsDataFileName);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void readFromFile() {
+        try {
+            String json = filesService.readFromJsonFile(ingredientsDataFileName);
+            if (json != null) {
+                ingredients = new ObjectMapper().readValue(json, new TypeReference<LinkedHashMap<Integer, Ingredient>>() {
+                });
+            }
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -1,6 +1,7 @@
 package pro.sky.course3.hw24.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -10,23 +11,13 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 public class Ingredient {
-
-    private static int counter = 0;
 
     private Integer id;
     private String name;
     private Integer amount;
     private String measureUnit;
-
-    public Ingredient(String name,
-                      Integer amount,
-                      String measureUnit) {
-        id = ++counter;
-        setName(name);
-        setAmount(amount);
-        setMeasureUnit(measureUnit);
-    }
 
     @Override
     public boolean equals(Object o) {
