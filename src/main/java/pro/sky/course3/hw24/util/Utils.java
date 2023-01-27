@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 public class Utils {
-    public static void addNewIngredients(Recipe recipe) {
+    public static void addNewIngredients(Recipe recipe, Integer counter) {
         Collection<Ingredient> ingredients = IngredientsServiceImpl.ingredients.values();
         label:
         for (int i = 0; i < recipe.getIngredients().size(); i++) {
@@ -20,6 +20,7 @@ public class Utils {
                     continue label;
                 }
             }
+            recipe.getIngredients().get(i).setId(++counter);
             IngredientsServiceImpl.ingredients.put(
                     recipe.getIngredients().get(i).getId(),
                     recipe.getIngredients().get(i));

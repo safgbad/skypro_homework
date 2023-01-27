@@ -1,6 +1,7 @@
 package pro.sky.course3.hw24.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -12,26 +13,14 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 public class Recipe {
-
-    public static int counter = 0;
 
     private Integer id;
     private String name;
     private Integer cookingTime;
     private List<Ingredient> ingredients;
     private List<String> steps;
-
-    public Recipe(String name,
-                  Integer cookingTime,
-                  List<Ingredient> ingredients,
-                  List<String> steps) {
-        id = ++counter;
-        setName(name);
-        setCookingTime(cookingTime);
-        setIngredients(ingredients);
-        setSteps(steps);
-    }
 
     @Override
     public boolean equals(Object o) {
