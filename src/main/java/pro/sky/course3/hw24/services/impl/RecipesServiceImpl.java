@@ -4,12 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import pro.sky.course3.hw24.model.Ingredient;
 import pro.sky.course3.hw24.model.Recipe;
 import pro.sky.course3.hw24.services.FilesService;
+import pro.sky.course3.hw24.services.IngredientsService;
 import pro.sky.course3.hw24.services.RecipesService;
 
 import javax.annotation.PostConstruct;
@@ -28,19 +28,14 @@ public class RecipesServiceImpl implements RecipesService {
 
     private static int counter = 0;
 
-    private static Map<Integer, Recipe> recipes = new LinkedHashMap<>();
-
-    public static String RECIPES_DATA_FILE_NAME;
-
-    @Value("${name.of.recipes.data.file}")
-    private void setRecipesDataFileName(String recipesDataFileName) {
-        RECIPES_DATA_FILE_NAME = recipesDataFileName;
-    }
+    private Map<Integer, Recipe> recipes = new LinkedHashMap<>();
 
     private final FilesService filesService;
+    private final IngredientsService ingredientsService;
 
-    public RecipesServiceImpl(FilesService filesService) {
+    public RecipesServiceImpl(FilesService filesService, IngredientsService ingredientsService) {
         this.filesService = filesService;
+        this.ingredientsService = ingredientsService;
     }
 
     @PostConstruct
@@ -59,7 +54,7 @@ public class RecipesServiceImpl implements RecipesService {
             }
         }
         recipe.setId(++counter);
-        addNewIngredients(recipe, counter);
+        addNewIngredients(recipe, counter, ingredientsService);
         recipes.put(recipe.getId(), recipe);
         saveToFile();
 
@@ -95,7 +90,7 @@ public class RecipesServiceImpl implements RecipesService {
     @Override
     public Recipe updateRecipe(int number, Recipe recipe) {
         if (!recipes.containsKey(number)) return null;
-        addNewIngredients(recipe, counter);
+        addNewIngredients(recipe, counter, ingredientsService);
         recipe.setId(number);
         Recipe result = recipes.put(number, recipe);
         saveToFile();
@@ -116,9 +111,9 @@ public class RecipesServiceImpl implements RecipesService {
     private void saveToFile() {
         try {
             String json = new ObjectMapper().writeValueAsString(recipes);
-            filesService.saveToJsonFile(json, RECIPES_DATA_FILE_NAME);
-            json = new ObjectMapper().writeValueAsString(IngredientsServiceImpl.ingredients);
-            filesService.saveToJsonFile(json, IngredientsServiceImpl.INGREDIENTS_DATA_FILE_NAME);
+            filesService.saveToJsonFile(json, filesService.getRecipesDataFileName());
+            json = new ObjectMapper().writeValueAsString(ingredientsService.getIngredients());
+            filesService.saveToJsonFile(json, filesService.getIngredientsDataFileName());
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -126,7 +121,7 @@ public class RecipesServiceImpl implements RecipesService {
 
     private void readFromFile() {
         try {
-            String json = filesService.readFromJsonFile(RECIPES_DATA_FILE_NAME);
+            String json = filesService.readFromJsonFile(filesService.getRecipesDataFileName());
             if (json != null) {
                 recipes = new ObjectMapper().readValue(json, new TypeReference<LinkedHashMap<Integer, Recipe>>() {
                 });

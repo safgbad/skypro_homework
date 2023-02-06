@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import pro.sky.course3.hw24.model.Ingredient;
@@ -23,19 +22,17 @@ public class IngredientsServiceImpl implements IngredientsService {
 
     private static Integer counter = 0;
 
-    public static Map<Integer, Ingredient> ingredients = new LinkedHashMap<>();
-
-    public static String INGREDIENTS_DATA_FILE_NAME;
-
-    @Value("${name.of.ingredients.data.file}")
-    private void setIngredientsDataFileName(String ingredientsDataFileName) {
-        INGREDIENTS_DATA_FILE_NAME = ingredientsDataFileName;
-    }
+    public Map<Integer, Ingredient> ingredients = new LinkedHashMap<>();
 
     private final FilesService filesService;
 
     public IngredientsServiceImpl(FilesService filesService) {
         this.filesService = filesService;
+    }
+
+    @Override
+    public Map<Integer, Ingredient> getIngredients() {
+        return ingredients;
     }
 
     @PostConstruct
@@ -98,7 +95,7 @@ public class IngredientsServiceImpl implements IngredientsService {
     private void saveToFile() {
         try {
             String json = new ObjectMapper().writeValueAsString(ingredients);
-            filesService.saveToJsonFile(json, INGREDIENTS_DATA_FILE_NAME);
+            filesService.saveToJsonFile(json, filesService.getIngredientsDataFileName());
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -106,7 +103,7 @@ public class IngredientsServiceImpl implements IngredientsService {
 
     private void readFromFile() {
         try {
-            String json = filesService.readFromJsonFile(INGREDIENTS_DATA_FILE_NAME);
+            String json = filesService.readFromJsonFile(filesService.getIngredientsDataFileName());
             if (json != null) {
                 ingredients = new ObjectMapper().readValue(json, new TypeReference<LinkedHashMap<Integer, Ingredient>>() {
                 });

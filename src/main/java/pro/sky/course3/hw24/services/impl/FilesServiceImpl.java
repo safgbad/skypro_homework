@@ -15,6 +15,24 @@ public class FilesServiceImpl implements FilesService {
 
     @Value("${path.to.data.files}")
     private String dataFilesPath;
+    @Value("${name.of.ingredients.data.file}")
+    private String ingredientsDataFileName;
+    @Value("${name.of.recipes.data.file}")
+    private String recipesDataFileName;
+
+    public String getDataFilesPath() {
+        return dataFilesPath;
+    }
+
+    @Override
+    public String getIngredientsDataFileName() {
+        return ingredientsDataFileName;
+    }
+
+    @Override
+    public String getRecipesDataFileName() {
+        return recipesDataFileName;
+    }
 
     @Override
     public boolean saveToJsonFile(String json, String dataFileName) {

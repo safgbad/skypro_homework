@@ -2,14 +2,14 @@ package pro.sky.course3.hw24.util;
 
 import pro.sky.course3.hw24.model.Ingredient;
 import pro.sky.course3.hw24.model.Recipe;
-import pro.sky.course3.hw24.services.impl.IngredientsServiceImpl;
+import pro.sky.course3.hw24.services.IngredientsService;
 
 import java.util.Collection;
 import java.util.Collections;
 
 public class Utils {
-    public static void addNewIngredients(Recipe recipe, Integer counter) {
-        Collection<Ingredient> ingredients = IngredientsServiceImpl.ingredients.values();
+    public static void addNewIngredients(Recipe recipe, Integer counter, IngredientsService ingredientsService) {
+        Collection<Ingredient> ingredients = ingredientsService.getIngredients().values();
         label:
         for (int i = 0; i < recipe.getIngredients().size(); i++) {
             for (Ingredient ingredient : ingredients) {
@@ -21,7 +21,7 @@ public class Utils {
                 }
             }
             recipe.getIngredients().get(i).setId(++counter);
-            IngredientsServiceImpl.ingredients.put(
+            ingredientsService.getIngredients().put(
                     recipe.getIngredients().get(i).getId(),
                     recipe.getIngredients().get(i));
         }

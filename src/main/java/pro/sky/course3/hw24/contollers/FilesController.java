@@ -25,8 +25,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import pro.sky.course3.hw24.services.FilesService;
-import pro.sky.course3.hw24.services.impl.IngredientsServiceImpl;
-import pro.sky.course3.hw24.services.impl.RecipesServiceImpl;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -74,7 +72,9 @@ public class FilesController {
     public ResponseEntity<InputStreamResource> downloadDataFile(
             @PathVariable String entity) throws FileNotFoundException {
         String dataFileName = recognizeEntity(entity);
-        if (dataFileName == null) return ResponseEntity.badRequest().build();
+        if (dataFileName == null) {
+            return ResponseEntity.badRequest().build();
+        }
         File dataFile = filesService.getDataFile(dataFileName);
 
         if (dataFile.exists()) {
@@ -121,7 +121,9 @@ public class FilesController {
             @PathVariable String entity,
             @RequestParam MultipartFile file) {
         String dataFileName = recognizeEntity(entity);
-        if (dataFileName == null) return ResponseEntity.badRequest().build();
+        if (dataFileName == null) {
+            return ResponseEntity.badRequest().build();
+        }
         filesService.cleanDataFile(dataFileName);
         File dataFile = filesService.getDataFile(dataFileName);
 
@@ -137,8 +139,8 @@ public class FilesController {
 
     private String recognizeEntity(String pathVariable) {
         return switch (pathVariable) {
-            case "ingredient" -> IngredientsServiceImpl.INGREDIENTS_DATA_FILE_NAME;
-            case "recipe" -> RecipesServiceImpl.RECIPES_DATA_FILE_NAME;
+            case "ingredient" -> filesService.getIngredientsDataFileName();
+            case "recipe" -> filesService.getRecipesDataFileName();
             default -> null;
         };
     }
