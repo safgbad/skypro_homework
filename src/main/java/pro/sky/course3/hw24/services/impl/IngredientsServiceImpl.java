@@ -20,12 +20,17 @@ import java.util.List;
 
 @Service
 public class IngredientsServiceImpl implements IngredientsService {
+
     private static Integer counter = 0;
 
     public static Map<Integer, Ingredient> ingredients = new LinkedHashMap<>();
 
+    public static String INGREDIENTS_DATA_FILE_NAME;
+
     @Value("${name.of.ingredients.data.file}")
-    private String ingredientsDataFileName;
+    private void setIngredientsDataFileName(String ingredientsDataFileName) {
+        INGREDIENTS_DATA_FILE_NAME = ingredientsDataFileName;
+    }
 
     private final FilesService filesService;
 
@@ -93,7 +98,7 @@ public class IngredientsServiceImpl implements IngredientsService {
     private void saveToFile() {
         try {
             String json = new ObjectMapper().writeValueAsString(ingredients);
-            filesService.saveToJsonFile(json, ingredientsDataFileName);
+            filesService.saveToJsonFile(json, INGREDIENTS_DATA_FILE_NAME);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -101,7 +106,7 @@ public class IngredientsServiceImpl implements IngredientsService {
 
     private void readFromFile() {
         try {
-            String json = filesService.readFromJsonFile(ingredientsDataFileName);
+            String json = filesService.readFromJsonFile(INGREDIENTS_DATA_FILE_NAME);
             if (json != null) {
                 ingredients = new ObjectMapper().readValue(json, new TypeReference<LinkedHashMap<Integer, Ingredient>>() {
                 });

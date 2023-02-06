@@ -30,11 +30,12 @@ public class RecipesServiceImpl implements RecipesService {
 
     private static Map<Integer, Recipe> recipes = new LinkedHashMap<>();
 
-    @Value("${name.of.recipes.data.file}")
-    private String recipesDataFileName;
+    public static String RECIPES_DATA_FILE_NAME;
 
-    @Value("${name.of.ingredients.data.file}")
-    private String ingredientsDataFileName;
+    @Value("${name.of.recipes.data.file}")
+    private void setRecipesDataFileName(String recipesDataFileName) {
+        RECIPES_DATA_FILE_NAME = recipesDataFileName;
+    }
 
     private final FilesService filesService;
 
@@ -115,9 +116,9 @@ public class RecipesServiceImpl implements RecipesService {
     private void saveToFile() {
         try {
             String json = new ObjectMapper().writeValueAsString(recipes);
-            filesService.saveToJsonFile(json, recipesDataFileName);
+            filesService.saveToJsonFile(json, RECIPES_DATA_FILE_NAME);
             json = new ObjectMapper().writeValueAsString(IngredientsServiceImpl.ingredients);
-            filesService.saveToJsonFile(json, ingredientsDataFileName);
+            filesService.saveToJsonFile(json, IngredientsServiceImpl.INGREDIENTS_DATA_FILE_NAME);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -125,7 +126,7 @@ public class RecipesServiceImpl implements RecipesService {
 
     private void readFromFile() {
         try {
-            String json = filesService.readFromJsonFile(recipesDataFileName);
+            String json = filesService.readFromJsonFile(RECIPES_DATA_FILE_NAME);
             if (json != null) {
                 recipes = new ObjectMapper().readValue(json, new TypeReference<LinkedHashMap<Integer, Recipe>>() {
                 });

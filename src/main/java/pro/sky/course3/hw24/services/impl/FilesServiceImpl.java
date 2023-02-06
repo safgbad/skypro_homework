@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import pro.sky.course3.hw24.services.FilesService;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -19,7 +20,7 @@ public class FilesServiceImpl implements FilesService {
     public boolean saveToJsonFile(String json, String dataFileName) {
         Path path = Path.of(dataFilesPath, dataFileName);
         try {
-            cleanDataFile(path);
+            cleanDataFile(dataFileName);
             Files.writeString(path, json);
             return true;
         } catch (IOException | NullPointerException e) {
@@ -39,7 +40,14 @@ public class FilesServiceImpl implements FilesService {
         }
     }
 
-    private boolean cleanDataFile(Path path) {
+    @Override
+    public File getDataFile(String dataFileName) {
+        return new File(dataFilesPath + '/' + dataFileName);
+    }
+
+    @Override
+    public boolean cleanDataFile(String dataFileName) {
+        Path path = Path.of(dataFilesPath, dataFileName);
         try {
             Files.createDirectories(path.getParent());
             Files.deleteIfExists(path);
