@@ -9,24 +9,26 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-
+import org.springframework.web.bind.annotation.RestController;
 import pro.sky.course3.hw24.model.Recipe;
 import pro.sky.course3.hw24.services.RecipesService;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 @RestController
@@ -128,6 +130,45 @@ public class RecipesController {
         }
 
         return ResponseEntity.ok(recipes);
+    }
+
+    @Operation(
+            summary = "Выгрузить форматированный файл со всеми рецептами",
+            description = "На выходе файл markdown"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Файл получен и выгружен",
+                    content = {@Content(mediaType = "text/markdown")}
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Список рецептов пуст"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Внутренняя ошибка сервера"
+            )
+    })
+    @GetMapping("/download")
+    public ResponseEntity<Object> downloadFormattedDataFile() {
+        try {
+            Path path = recipesService.generateFormattedFile();
+            if (Files.size(path) == 0) {
+                return ResponseEntity.noContent().build();
+            }
+            InputStreamResource resource = new InputStreamResource(new FileInputStream(path.toFile()));
+            return ResponseEntity.ok()
+                    .contentType(MediaType.TEXT_MARKDOWN)
+                    .contentLength(Files.size(path))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; " +
+                            "filename = \"FORMATTED_RECIPES.md\"")
+                    .body(resource);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(e.toString());
+        }
     }
 
     @Operation(summary = "Поиск рецептов, содержащих ингредиент с указанным ID")

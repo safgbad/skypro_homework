@@ -13,4 +13,8 @@ public interface IngredientsService {
     List<Ingredient> getAllIngredients();
     Ingredient updateIngredient(int number, Ingredient ingredient);
     Ingredient deleteIngredient(int number);
+
+    void saveToFile();
+
+    void readFromFile();
 }
