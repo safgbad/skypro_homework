@@ -9,6 +9,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import pro.sky.course3.hw24.exceptions.UnableToConvertToJson;
+import pro.sky.course3.hw24.exceptions.UnableToCreateTempFile;
+import pro.sky.course3.hw24.exceptions.UnableToParseJson;
 import pro.sky.course3.hw24.model.Ingredient;
 import pro.sky.course3.hw24.model.Recipe;
 import pro.sky.course3.hw24.services.FilesService;
@@ -20,6 +23,7 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Collections;
@@ -84,7 +88,7 @@ public class RecipesServiceImpl implements RecipesService {
     }
 
     @Override
-    public Path generateFormattedFile() throws IOException {
+    public Path generateFormattedFile() throws UnableToCreateTempFile, IOException {
         Path path = filesService.createTempFile("formattedRecipes");
         for (Recipe recipe : recipes.values())
         {
@@ -149,11 +153,11 @@ public class RecipesServiceImpl implements RecipesService {
             filesService.saveToJsonFile(json, filesService.getRecipesDataFileName());
             ingredientsService.saveToFile();
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new UnableToConvertToJson(e);
         }
     }
 
-    public void readFromFile() {
+    public void readFromFile() throws UnableToParseJson {
         try {
             String json = filesService.readFromJsonFile(filesService.getRecipesDataFileName());
             DataFile dataFile = new ObjectMapper().readValue(json, new TypeReference<>() {
@@ -161,7 +165,9 @@ public class RecipesServiceImpl implements RecipesService {
             recipes = dataFile.getRecipes();
             counter = dataFile.getCounter();
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new UnableToParseJson(e);
+        } catch (NoSuchFileException e) {
+            e.printStackTrace();
         }
     }
 

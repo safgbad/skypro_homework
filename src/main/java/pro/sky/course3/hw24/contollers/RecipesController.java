@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import pro.sky.course3.hw24.exceptions.UnableToCreateTempFile;
 import pro.sky.course3.hw24.model.Recipe;
 import pro.sky.course3.hw24.services.RecipesService;
 
@@ -165,7 +166,7 @@ public class RecipesController {
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; " +
                             "filename = \"FORMATTED_RECIPES.md\"")
                     .body(resource);
-        } catch (IOException e) {
+        } catch (IOException | UnableToCreateTempFile e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body(e.toString());
         }

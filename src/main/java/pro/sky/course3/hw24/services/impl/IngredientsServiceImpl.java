@@ -8,11 +8,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import pro.sky.course3.hw24.exceptions.UnableToConvertToJson;
+import pro.sky.course3.hw24.exceptions.UnableToParseJson;
 import pro.sky.course3.hw24.model.Ingredient;
 import pro.sky.course3.hw24.services.FilesService;
 import pro.sky.course3.hw24.services.IngredientsService;
 
 import javax.annotation.PostConstruct;
+import java.nio.file.NoSuchFileException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,18 +97,18 @@ public class IngredientsServiceImpl implements IngredientsService {
     }
 
     @Override
-    public void saveToFile() {
+    public void saveToFile() throws UnableToConvertToJson {
         try {
             DataFile dataFile = new DataFile(counter, ingredients);
             String json = new ObjectMapper().writeValueAsString(dataFile);
             filesService.saveToJsonFile(json, filesService.getIngredientsDataFileName());
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new UnableToConvertToJson(e);
         }
     }
 
     @Override
-    public void readFromFile() {
+    public void readFromFile() throws UnableToParseJson {
         try {
             String json = filesService.readFromJsonFile(filesService.getIngredientsDataFileName());
             DataFile dataFile = new ObjectMapper().readValue(json, new TypeReference<>() {
@@ -113,7 +116,9 @@ public class IngredientsServiceImpl implements IngredientsService {
             ingredients = dataFile.getIngredients();
             counter = dataFile.getCounter();
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new UnableToParseJson(e);
+        } catch (NoSuchFileException e) {
+            e.printStackTrace();
         }
     }
 
