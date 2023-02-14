@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import pro.sky.course3.coursework.exceptions.InvalidInputException;
+import pro.sky.course3.coursework.exceptions.NotEnoughSocksException;
 import pro.sky.course3.coursework.exceptions.NothingToExportException;
 import pro.sky.course3.coursework.exceptions.NothingToImportException;
 import pro.sky.course3.coursework.services.OperationsService;
@@ -64,6 +65,9 @@ public class OperationsController {
         } catch (InvalidInputException | JsonProcessingException e) {
             return ResponseEntity.badRequest()
                     .body("Invalid file format");
+        } catch (NotEnoughSocksException e) {
+            return ResponseEntity.badRequest()
+                    .body("Error with socks quantity");
         } catch (IOException e) {
             return ResponseEntity.internalServerError()
                     .body(e.toString());

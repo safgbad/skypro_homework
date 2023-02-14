@@ -2,6 +2,7 @@ package pro.sky.course3.coursework.services;
 
 import org.springframework.web.multipart.MultipartFile;
 import pro.sky.course3.coursework.exceptions.InvalidInputException;
+import pro.sky.course3.coursework.exceptions.NotEnoughSocksException;
 import pro.sky.course3.coursework.exceptions.NothingToExportException;
 import pro.sky.course3.coursework.exceptions.NothingToImportException;
 import pro.sky.course3.coursework.model.PairOfSocks;
@@ -17,7 +18,7 @@ public interface OperationsService {
     Path generateExportFile() throws IOException, NothingToExportException;
 
     void importOperations(MultipartFile file)
-            throws NothingToImportException, InvalidInputException, IOException;
+            throws NothingToImportException, InvalidInputException, IOException, NotEnoughSocksException;
 
     void synchronize(Map<PairOfSocks, Integer> socks);
 }

@@ -134,10 +134,13 @@ public class SocksServiceImpl implements SocksService {
     }
 
     @Override
-    public void synchronize(List<ApiOperationDTO> operations) throws InvalidInputException {
+    public void synchronize(List<ApiOperationDTO> operations) throws InvalidInputException, NotEnoughSocksException {
         socks = new HashMap<>();
         for (ApiOperationDTO operation : operations) {
-            addSocks(operation.getSocks(), true);
+            switch (ObjectConversion.getOperationTypeFromString(operation.getOperationType())) {
+                case RECEIVING -> addSocks(operation.getSocks(), true);
+                case WRITE_OFF, RELEASE -> releaseSocks(operation.getSocks(), false, true);
+            }
         }
     }
 }

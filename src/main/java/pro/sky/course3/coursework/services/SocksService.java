@@ -31,5 +31,5 @@ public interface SocksService {
     void importSocks(MultipartFile file)
             throws NothingToImportException, InvalidInputException, IOException;
 
-    void synchronize(List<ApiOperationDTO> operations) throws InvalidInputException;
+    void synchronize(List<ApiOperationDTO> operations) throws InvalidInputException, NotEnoughSocksException;
 }

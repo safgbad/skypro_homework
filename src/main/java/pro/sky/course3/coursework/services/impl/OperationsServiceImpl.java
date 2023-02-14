@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pro.sky.course3.coursework.dto.ApiOperationDTO;
 import pro.sky.course3.coursework.exceptions.InvalidInputException;
+import pro.sky.course3.coursework.exceptions.NotEnoughSocksException;
 import pro.sky.course3.coursework.exceptions.NothingToExportException;
 import pro.sky.course3.coursework.exceptions.NothingToImportException;
 import pro.sky.course3.coursework.model.Operation;
@@ -75,7 +76,7 @@ public class OperationsServiceImpl implements OperationsService {
 
     @Override
     public void importOperations(MultipartFile file)
-            throws NothingToImportException, InvalidInputException, IOException {
+            throws NothingToImportException, InvalidInputException, IOException, NotEnoughSocksException {
         if (file.isEmpty()) {
             throw new NothingToImportException("Specified file is empty");
         }
