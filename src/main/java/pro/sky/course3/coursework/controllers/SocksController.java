@@ -18,6 +18,9 @@ import pro.sky.course3.coursework.exceptions.InvalidInputException;
 import pro.sky.course3.coursework.exceptions.NotEnoughSocksException;
 import pro.sky.course3.coursework.exceptions.NothingToExportException;
 import pro.sky.course3.coursework.exceptions.NothingToImportException;
+import pro.sky.course3.coursework.model.PairOfSocks;
+import pro.sky.course3.coursework.model.enums.OperationType;
+import pro.sky.course3.coursework.services.OperationsService;
 import pro.sky.course3.coursework.services.SocksService;
 import pro.sky.course3.coursework.dto.ApiPairOfSocksDTO;
 
@@ -25,21 +28,25 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/socks")
 public class SocksController {
 
     private final SocksService socksService;
+    private final OperationsService operationsService;
 
-    public SocksController(SocksService socksService) {
+    public SocksController(SocksService socksService, OperationsService operationsService) {
         this.socksService = socksService;
+        this.operationsService = operationsService;
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addSocks(@RequestBody ApiPairOfSocksDTO apiPairOfSocksDTO) {
         try {
-            socksService.addSocks(apiPairOfSocksDTO, false);
+            PairOfSocks pairOfSocks = socksService.addSocks(apiPairOfSocksDTO);
+            operationsService.addOperation(pairOfSocks, apiPairOfSocksDTO.getQuantity(), OperationType.RECEIVING);
             return ResponseEntity.ok()
                     .body("Socks are successfully added");
         } catch (InvalidInputException e) {
@@ -57,7 +64,9 @@ public class SocksController {
                                            @RequestParam(required = false) Integer cottonPart,
                                            @RequestParam(required = false) Integer quantity) {
         try {
-            socksService.addSocks(new ApiPairOfSocksDTO(color, size, cottonPart, quantity), false);
+            // TODO: do another adding method
+            PairOfSocks pairOfSocks = socksService.addSocks(new ApiPairOfSocksDTO(color, size, cottonPart, quantity));
+            operationsService.addOperation(pairOfSocks, quantity, OperationType.RECEIVING);
             return ResponseEntity.ok()
                     .body("Socks are successfully added");
         } catch (InvalidInputException e) {
@@ -89,7 +98,8 @@ public class SocksController {
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> releaseSocks(@RequestBody ApiPairOfSocksDTO apiPairOfSocksDTO) {
         try {
-            socksService.releaseSocks(apiPairOfSocksDTO, false, false);
+            PairOfSocks pairOfSocks = socksService.releaseSocks(apiPairOfSocksDTO);
+            operationsService.addOperation(pairOfSocks, apiPairOfSocksDTO.getQuantity(), OperationType.RELEASE);
             return ResponseEntity.ok()
                     .body("Socks have been successfully released from the warehouse");
         } catch (InvalidInputException | NotEnoughSocksException e) {
@@ -107,7 +117,9 @@ public class SocksController {
                                                @RequestParam(required = false) Integer cottonPart,
                                                @RequestParam(required = false) Integer quantity) {
         try {
-            socksService.releaseSocks(new ApiPairOfSocksDTO(color, size, cottonPart, quantity), false, false);
+            PairOfSocks pairOfSocks = socksService.releaseSocks(
+                    new ApiPairOfSocksDTO(color, size, cottonPart, quantity));
+            operationsService.addOperation(pairOfSocks, quantity, OperationType.RELEASE);
             return ResponseEntity.ok()
                     .body("Socks have been successfully released from the warehouse");
         } catch (InvalidInputException | NotEnoughSocksException e) {
@@ -122,7 +134,8 @@ public class SocksController {
     @DeleteMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> writeOffSocks(@RequestBody ApiPairOfSocksDTO apiPairOfSocksDTO) {
         try {
-            socksService.releaseSocks(apiPairOfSocksDTO, true, false);
+            PairOfSocks pairOfSocks = socksService.releaseSocks(apiPairOfSocksDTO);
+            operationsService.addOperation(pairOfSocks, apiPairOfSocksDTO.getQuantity(), OperationType.WRITE_OFF);
             return ResponseEntity.ok()
                     .body("Socks have been successfully written off from the warehouse");
         } catch (InvalidInputException | NotEnoughSocksException e) {
@@ -140,7 +153,9 @@ public class SocksController {
                                                 @RequestParam(required = false) Integer cottonPart,
                                                 @RequestParam(required = false) Integer quantity) {
         try {
-            socksService.releaseSocks(new ApiPairOfSocksDTO(color, size, cottonPart, quantity), true, false);
+            PairOfSocks pairOfSocks = socksService.releaseSocks(
+                    new ApiPairOfSocksDTO(color, size, cottonPart, quantity));
+            operationsService.addOperation(pairOfSocks, quantity, OperationType.WRITE_OFF);
             return ResponseEntity.ok()
                     .body("Socks have been successfully written off from the warehouse");
         } catch (InvalidInputException | NotEnoughSocksException e) {
@@ -176,7 +191,8 @@ public class SocksController {
     @PutMapping(path = "/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadSocksDataFile(@RequestParam MultipartFile file) {
         try {
-            socksService.importSocks(file);
+            Map<PairOfSocks, Integer> socks = socksService.importSocks(file);
+            operationsService.synchronize(socks);
             return ResponseEntity.ok()
                     .body("Socks data was successfully imported from file");
         } catch (NothingToImportException e) {

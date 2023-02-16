@@ -15,20 +15,25 @@ import pro.sky.course3.coursework.exceptions.InvalidInputException;
 import pro.sky.course3.coursework.exceptions.NotEnoughSocksException;
 import pro.sky.course3.coursework.exceptions.NothingToExportException;
 import pro.sky.course3.coursework.exceptions.NothingToImportException;
+import pro.sky.course3.coursework.model.Operation;
 import pro.sky.course3.coursework.services.OperationsService;
+import pro.sky.course3.coursework.services.SocksService;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/socks/operations")
 public class OperationsController {
 
+    private final SocksService socksService;
     private final OperationsService operationsService;
 
-    public OperationsController(OperationsService operationsService) {
+    public OperationsController(SocksService socksService, OperationsService operationsService) {
+        this.socksService = socksService;
         this.operationsService = operationsService;
     }
 
@@ -56,7 +61,8 @@ public class OperationsController {
     @PutMapping(path = "/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadOperationsDataFile(@RequestParam MultipartFile file) {
         try {
-            operationsService.importOperations(file);
+            List<Operation> operations = operationsService.importOperations(file);
+            socksService.synchronize(operations);
             return ResponseEntity.ok()
                     .body("Operations data was successfully imported from file");
         } catch (NothingToImportException e) {

@@ -4,16 +4,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import pro.sky.course3.coursework.dto.ApiOperationDTO;
 import pro.sky.course3.coursework.exceptions.InvalidInputException;
 import pro.sky.course3.coursework.exceptions.NotEnoughSocksException;
 import pro.sky.course3.coursework.exceptions.NothingToExportException;
 import pro.sky.course3.coursework.exceptions.NothingToImportException;
+import pro.sky.course3.coursework.model.Operation;
 import pro.sky.course3.coursework.model.PairOfSocks;
 import pro.sky.course3.coursework.model.enums.Color;
-import pro.sky.course3.coursework.model.enums.OperationType;
 import pro.sky.course3.coursework.model.enums.Size;
-import pro.sky.course3.coursework.services.OperationsService;
 import pro.sky.course3.coursework.services.TempFilesService;
 import pro.sky.course3.coursework.services.SocksService;
 import pro.sky.course3.coursework.util.ObjectConversion;
@@ -32,18 +30,15 @@ import java.util.Objects;
 public class SocksServiceImpl implements SocksService {
 
     private final TempFilesService tempFilesService;
-    private final OperationsService operationsService;
 
     private static Map<PairOfSocks, Integer> socks = new HashMap<>();
 
-    public SocksServiceImpl(TempFilesService tempFilesService, OperationsService operationsService) {
+    public SocksServiceImpl(TempFilesService tempFilesService) {
         this.tempFilesService = tempFilesService;
-        this.operationsService = operationsService;
     }
 
     @Override
-    public void addSocks(ApiPairOfSocksDTO apiPairOfSocksDTO,
-                         boolean isSynchronizing) throws InvalidInputException {
+    public PairOfSocks addSocks(ApiPairOfSocksDTO apiPairOfSocksDTO) throws InvalidInputException {
         PairOfSocks pairOfSocks = ObjectConversion.getPairOfSocksFromDTO(apiPairOfSocksDTO);
         ValueCheck.checkQuantity(apiPairOfSocksDTO.getQuantity());
         int quantity = apiPairOfSocksDTO.getQuantity();
@@ -53,8 +48,15 @@ public class SocksServiceImpl implements SocksService {
             socks.put(pairOfSocks, currentQuantity + quantity);
         }
 
-        if (!isSynchronizing) {
-            operationsService.addOperation(pairOfSocks, quantity, OperationType.RECEIVING);
+        return pairOfSocks;
+    }
+
+    private void addSocks(PairOfSocks pairOfSocks, Integer quantity) throws InvalidInputException {
+        ValueCheck.checkQuantity(quantity);
+
+        Integer currentQuantity;
+        if ((currentQuantity = socks.putIfAbsent(pairOfSocks, quantity)) != null) {
+            socks.put(pairOfSocks, currentQuantity + quantity);
         }
     }
 
@@ -83,9 +85,7 @@ public class SocksServiceImpl implements SocksService {
     }
 
     @Override
-    public void releaseSocks(ApiPairOfSocksDTO apiPairOfSocksDTO,
-                             boolean isWritingOff,
-                             boolean isSynchronizing) throws InvalidInputException,
+    public PairOfSocks releaseSocks(ApiPairOfSocksDTO apiPairOfSocksDTO) throws InvalidInputException,
             NotEnoughSocksException {
         PairOfSocks pairOfSocks = ObjectConversion.getPairOfSocksFromDTO(apiPairOfSocksDTO);
 
@@ -98,11 +98,18 @@ public class SocksServiceImpl implements SocksService {
         }
         socks.put(pairOfSocks, currentQuantity - quantity);
 
-        if (!isSynchronizing) {
-            operationsService.addOperation(pairOfSocks,
-                    quantity,
-                    isWritingOff ? OperationType.WRITE_OFF : OperationType.RELEASE);
+        return pairOfSocks;
+    }
+
+    private void releaseSocks(PairOfSocks pairOfSocks,
+                              Integer quantity) throws InvalidInputException, NotEnoughSocksException {
+        ValueCheck.checkQuantity(quantity);
+
+        Integer currentQuantity = socks.get(pairOfSocks);
+        if (currentQuantity == null || currentQuantity < quantity) {
+            throw new NotEnoughSocksException("Not enough socks in stock");
         }
+        socks.put(pairOfSocks, currentQuantity - quantity);
     }
 
     @Override
@@ -119,7 +126,7 @@ public class SocksServiceImpl implements SocksService {
     }
 
     @Override
-    public void importSocks(MultipartFile file)
+    public Map<PairOfSocks, Integer> importSocks(MultipartFile file)
             throws NothingToImportException, InvalidInputException, IOException {
         if (file.isEmpty()) {
             throw new NothingToImportException("Specified file is empty");
@@ -128,18 +135,20 @@ public class SocksServiceImpl implements SocksService {
                 .readValue(file.getInputStream(), new TypeReference<>() {});
         socks = new HashMap<>();
         for (ApiPairOfSocksDTO dto : listDTO) {
-            addSocks(dto, false);
+            addSocks(dto);
         }
-        operationsService.synchronize(socks);
+
+        return socks;
     }
 
     @Override
-    public void synchronize(List<ApiOperationDTO> operations) throws InvalidInputException, NotEnoughSocksException {
+    public void synchronize(List<Operation> operations)
+            throws InvalidInputException, NotEnoughSocksException {
         socks = new HashMap<>();
-        for (ApiOperationDTO operation : operations) {
-            switch (ObjectConversion.getOperationTypeFromString(operation.getOperationType())) {
-                case RECEIVING -> addSocks(operation.getSocks(), true);
-                case WRITE_OFF, RELEASE -> releaseSocks(operation.getSocks(), false, true);
+        for (Operation operation : operations) {
+            switch (operation.getOperationType()) {
+                case RECEIVING -> addSocks(operation.getSocks(), operation.getQuantity());
+                case WRITE_OFF, RELEASE -> releaseSocks(operation.getSocks(), operation.getQuantity());
             }
         }
     }

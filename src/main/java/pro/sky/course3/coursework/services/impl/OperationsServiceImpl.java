@@ -6,14 +6,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pro.sky.course3.coursework.dto.ApiOperationDTO;
 import pro.sky.course3.coursework.exceptions.InvalidInputException;
-import pro.sky.course3.coursework.exceptions.NotEnoughSocksException;
 import pro.sky.course3.coursework.exceptions.NothingToExportException;
 import pro.sky.course3.coursework.exceptions.NothingToImportException;
 import pro.sky.course3.coursework.model.Operation;
 import pro.sky.course3.coursework.model.PairOfSocks;
 import pro.sky.course3.coursework.model.enums.OperationType;
 import pro.sky.course3.coursework.services.OperationsService;
-import pro.sky.course3.coursework.services.SocksService;
 import pro.sky.course3.coursework.services.TempFilesService;
 import pro.sky.course3.coursework.util.ObjectConversion;
 
@@ -24,19 +22,18 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class OperationsServiceImpl implements OperationsService {
 
     private final TempFilesService tempFilesService;
-    private final SocksService socksService;
 
     private static int counter = 0;
     private static Map<Integer, Operation> operations = new HashMap<>();
 
-    public OperationsServiceImpl(TempFilesService tempFilesService, SocksService socksService) {
+    public OperationsServiceImpl(TempFilesService tempFilesService) {
         this.tempFilesService = tempFilesService;
-        this.socksService = socksService;
     }
 
     @Override
@@ -75,14 +72,13 @@ public class OperationsServiceImpl implements OperationsService {
     }
 
     @Override
-    public void importOperations(MultipartFile file)
-            throws NothingToImportException, InvalidInputException, IOException, NotEnoughSocksException {
+    public List<Operation> importOperations(MultipartFile file)
+            throws NothingToImportException, InvalidInputException, IOException {
         if (file.isEmpty()) {
             throw new NothingToImportException("Specified file is empty");
         }
         List<ApiOperationDTO> listDTO = new ObjectMapper()
                 .readValue(file.getInputStream(), new TypeReference<>() {});
-        socksService.synchronize(listDTO);
         operations = new HashMap<>();
         for (ApiOperationDTO dto : listDTO) {
             addOperation(ObjectConversion.getPairOfSocksFromDTO(dto.getSocks()),
@@ -90,6 +86,11 @@ public class OperationsServiceImpl implements OperationsService {
                     ObjectConversion.getOperationTypeFromString(dto.getOperationType()),
                     LocalDateTime.parse(dto.getDateTime(), ApiOperationDTO.formatter));
         }
+
+        return operations.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(Map.Entry::getValue)
+                .collect(Collectors.toList());
     }
 
     @Override
