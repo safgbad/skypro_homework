@@ -4,8 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import pro.sky.course3.hw24.exceptions.UnableToConvertToJson;
+import pro.sky.course3.hw24.exceptions.UnableToCreateTempFile;
+import pro.sky.course3.hw24.exceptions.UnableToParseJson;
 import pro.sky.course3.hw24.model.Ingredient;
 import pro.sky.course3.hw24.model.Recipe;
 import pro.sky.course3.hw24.services.FilesService;
@@ -14,21 +20,25 @@ import pro.sky.course3.hw24.services.RecipesService;
 
 import javax.annotation.PostConstruct;
 
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.Collections;
 import java.util.Map;
 import java.util.LinkedHashMap;
-import java.util.Collections;
 import java.util.List;
 import java.util.HashSet;
 import java.util.Comparator;
-
-import static pro.sky.course3.hw24.util.Utils.addNewIngredients;
 
 @Service
 public class RecipesServiceImpl implements RecipesService {
 
     private static int counter = 0;
 
-    private Map<Integer, Recipe> recipes = new LinkedHashMap<>();
+    private LinkedHashMap<Integer, Recipe> recipes = new LinkedHashMap<>();
 
     private final FilesService filesService;
     private final IngredientsService ingredientsService;
@@ -40,9 +50,10 @@ public class RecipesServiceImpl implements RecipesService {
 
     @PostConstruct
     private void init() {
-        readFromFile();
-        if (!recipes.isEmpty()) {
-            counter = Collections.max(recipes.keySet());
+        try {
+            readFromFile();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -54,7 +65,7 @@ public class RecipesServiceImpl implements RecipesService {
             }
         }
         recipe.setId(++counter);
-        addNewIngredients(recipe, counter, ingredientsService);
+        addNewIngredients(recipe);
         recipes.put(recipe.getId(), recipe);
         saveToFile();
 
@@ -77,6 +88,33 @@ public class RecipesServiceImpl implements RecipesService {
     }
 
     @Override
+    public Path generateFormattedFile() throws UnableToCreateTempFile, IOException {
+        Path path = filesService.createTempFile("formattedRecipes");
+        for (Recipe recipe : recipes.values())
+        {
+            try (Writer writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
+                writer.append("## ").append(recipe.getName()).append('\n');
+                writer.append("#### ").append("*Время приготовления:* ")
+                        .append(String.valueOf(recipe.getCookingTime()))
+                        .append(" минут").append('\n');
+                writer.append("#### *Ингредиенты:*").append('\n');
+                for (Ingredient ingredient : recipe.getIngredients()) {
+                    writer.append("• ").append(ingredient.getName())
+                            .append(" – ").append(String.valueOf(ingredient.getAmount()))
+                            .append(ingredient.getMeasureUnit()).append('\n');
+                }
+                writer.append("#### *Инструкция приготовления:*").append('\n');
+                for (String step : recipe.getSteps()) {
+                    writer.append("1. ").append(step).append("\n");
+                }
+                writer.append('\n');
+            }
+        }
+
+        return path;
+    }
+
+    @Override
     public List<Recipe> searchByIngredientIds(List<Integer> ingredientIds) {
         return recipes.values().stream()
                 .filter(recipe -> new HashSet<>(recipe.getIngredients().stream()
@@ -90,7 +128,7 @@ public class RecipesServiceImpl implements RecipesService {
     @Override
     public Recipe updateRecipe(int number, Recipe recipe) {
         if (!recipes.containsKey(number)) return null;
-        addNewIngredients(recipe, counter, ingredientsService);
+        addNewIngredients(recipe);
         recipe.setId(number);
         Recipe result = recipes.put(number, recipe);
         saveToFile();
@@ -108,26 +146,53 @@ public class RecipesServiceImpl implements RecipesService {
         return result;
     }
 
-    private void saveToFile() {
+    public void saveToFile() {
         try {
-            String json = new ObjectMapper().writeValueAsString(recipes);
+            DataFile dataFile = new DataFile(counter, recipes);
+            String json = new ObjectMapper().writeValueAsString(dataFile);
             filesService.saveToJsonFile(json, filesService.getRecipesDataFileName());
-            json = new ObjectMapper().writeValueAsString(ingredientsService.getIngredients());
-            filesService.saveToJsonFile(json, filesService.getIngredientsDataFileName());
+            ingredientsService.saveToFile();
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new UnableToConvertToJson(e);
         }
     }
 
-    private void readFromFile() {
+    public void readFromFile() throws UnableToParseJson {
         try {
             String json = filesService.readFromJsonFile(filesService.getRecipesDataFileName());
-            if (json != null) {
-                recipes = new ObjectMapper().readValue(json, new TypeReference<LinkedHashMap<Integer, Recipe>>() {
-                });
-            }
+            DataFile dataFile = new ObjectMapper().readValue(json, new TypeReference<>() {
+            });
+            recipes = dataFile.getRecipes();
+            counter = dataFile.getCounter();
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new UnableToParseJson(e);
+        } catch (NoSuchFileException e) {
+            e.printStackTrace();
         }
+    }
+
+    private void addNewIngredients(Recipe recipe) {
+        List<Ingredient> ingredients = recipe.getIngredients();
+        label:
+        for (int i = 0; i < ingredients.size(); i++) {
+            for (Ingredient ingredient : ingredientsService.getIngredients().values())
+            {
+                if (ingredients.get(i).equals(ingredient)) {
+                    ingredients.add(ingredient);
+                    Collections.swap(ingredients, i, ingredients.size() - 1);
+                    ingredients.remove(ingredients.size() - 1);
+                    continue label;
+                }
+            }
+            ingredientsService.addIngredient(ingredients.get(i));
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    private static class DataFile {
+        private Integer counter;
+        private LinkedHashMap<Integer, Recipe> recipes;
     }
 }

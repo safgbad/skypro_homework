@@ -3,26 +3,29 @@ package pro.sky.course3.hw24.services.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import pro.sky.course3.hw24.exceptions.UnableToConvertToJson;
+import pro.sky.course3.hw24.exceptions.UnableToParseJson;
 import pro.sky.course3.hw24.model.Ingredient;
 import pro.sky.course3.hw24.services.FilesService;
 import pro.sky.course3.hw24.services.IngredientsService;
 
 import javax.annotation.PostConstruct;
-
-import java.util.Map;
+import java.nio.file.NoSuchFileException;
 import java.util.LinkedHashMap;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class IngredientsServiceImpl implements IngredientsService {
 
     private static Integer counter = 0;
 
-    public Map<Integer, Ingredient> ingredients = new LinkedHashMap<>();
+    public LinkedHashMap<Integer, Ingredient> ingredients = new LinkedHashMap<>();
 
     private final FilesService filesService;
 
@@ -37,9 +40,10 @@ public class IngredientsServiceImpl implements IngredientsService {
 
     @PostConstruct
     private void init() {
-        readFromFile();
-        if (!ingredients.isEmpty()) {
-            counter = Collections.max(ingredients.keySet());
+        try {
+            readFromFile();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -92,24 +96,37 @@ public class IngredientsServiceImpl implements IngredientsService {
         return result;
     }
 
-    private void saveToFile() {
+    @Override
+    public void saveToFile() throws UnableToConvertToJson {
         try {
-            String json = new ObjectMapper().writeValueAsString(ingredients);
+            DataFile dataFile = new DataFile(counter, ingredients);
+            String json = new ObjectMapper().writeValueAsString(dataFile);
             filesService.saveToJsonFile(json, filesService.getIngredientsDataFileName());
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new UnableToConvertToJson(e);
         }
     }
 
-    private void readFromFile() {
+    @Override
+    public void readFromFile() throws UnableToParseJson {
         try {
             String json = filesService.readFromJsonFile(filesService.getIngredientsDataFileName());
-            if (json != null) {
-                ingredients = new ObjectMapper().readValue(json, new TypeReference<LinkedHashMap<Integer, Ingredient>>() {
-                });
-            }
+            DataFile dataFile = new ObjectMapper().readValue(json, new TypeReference<>() {
+            });
+            ingredients = dataFile.getIngredients();
+            counter = dataFile.getCounter();
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new UnableToParseJson(e);
+        } catch (NoSuchFileException e) {
+            e.printStackTrace();
         }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    private static class DataFile {
+        private Integer counter;
+        private LinkedHashMap<Integer, Ingredient> ingredients;
     }
 }

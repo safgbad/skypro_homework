@@ -2,6 +2,8 @@ package pro.sky.course3.hw24.services.impl;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import pro.sky.course3.hw24.exceptions.UnableToCreateTempFile;
+import pro.sky.course3.hw24.exceptions.UnableToSaveFile;
 import pro.sky.course3.hw24.services.FilesService;
 
 import java.io.File;
@@ -41,18 +43,17 @@ public class FilesServiceImpl implements FilesService {
             cleanDataFile(dataFileName);
             Files.writeString(path, json);
             return true;
-        } catch (IOException | NullPointerException e) {
-            e.printStackTrace();
-            return false;
+        } catch (IOException e) {
+            throw new UnableToSaveFile();
         }
     }
 
     @Override
-    public String readFromJsonFile(String dataFileName) {
+    public String readFromJsonFile(String dataFileName) throws NoSuchFileException {
         try {
             return Files.readString(Path.of(dataFilesPath, dataFileName));
         } catch (NoSuchFileException e) {
-            return null;
+            throw new NoSuchFileException(dataFileName);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -61,6 +62,16 @@ public class FilesServiceImpl implements FilesService {
     @Override
     public File getDataFile(String dataFileName) {
         return new File(dataFilesPath + '/' + dataFileName);
+    }
+
+    @Override
+    public Path createTempFile(String suffix) throws UnableToCreateTempFile {
+        try {
+            return Files.createTempFile(Path.of(dataFilesPath),
+                    "temp", suffix);
+        } catch (IOException e) {
+            throw new UnableToCreateTempFile(e);
+        }
     }
 
     @Override

@@ -1,5 +1,7 @@
 package pro.sky.course3.hw24.services;
 
+import pro.sky.course3.hw24.exceptions.UnableToConvertToJson;
+import pro.sky.course3.hw24.exceptions.UnableToParseJson;
 import pro.sky.course3.hw24.model.Ingredient;
 
 import java.util.List;
@@ -13,4 +15,8 @@ public interface IngredientsService {
     List<Ingredient> getAllIngredients();
     Ingredient updateIngredient(int number, Ingredient ingredient);
     Ingredient deleteIngredient(int number);
+
+    void saveToFile() throws UnableToConvertToJson;
+
+    void readFromFile() throws UnableToParseJson;
 }
