@@ -85,3 +85,69 @@ FROM employee
 GROUP BY first_name
 HAVING COUNT(*) > 1
 ORDER BY namesakes_max_age DESC;
+
+
+-- Создайте таблицу city с колонками city_id и city_name.
+CREATE TABLE city
+(
+    city_id   BIGSERIAL   NOT NULL PRIMARY KEY,
+    city_name VARCHAR(50) NOT NULL
+);
+
+-- Добавьте в таблицу employee колонку city_id.
+ALTER TABLE employee
+    ADD city_id BIGINT;
+
+-- Назначьте ее внешним ключом и свяжите с таблицей city.
+ALTER TABLE employee
+    ADD CONSTRAINT fk_employee_city
+        FOREIGN KEY (city_id) REFERENCES city (city_id);
+
+-- Заполните таблицу city
+INSERT INTO city (city_id, city_name)
+    VALUES (1, 'Saint-Petersburg');
+INSERT INTO city (city_id, city_name)
+    VALUES (2, 'Moscow');
+INSERT INTO city (city_id, city_name)
+    VALUES (3, 'Kazan');
+INSERT INTO city (city_id, city_name)
+    VALUES (4, 'Omsk');
+
+-- Назначьте работникам соответствующие города.
+UPDATE employee SET city_id = 1 WHERE id = 1;
+UPDATE employee SET city_id = 2 WHERE id = 2;
+UPDATE employee SET city_id = 3 WHERE id = 3;
+UPDATE employee SET city_id = 1 WHERE id = 4;
+
+
+-- Получите имена и фамилии сотрудников, а также города, в которых они проживают.
+SELECT e.first_name,
+       e.last_name,
+       COALESCE(c.city_name, 'null') AS city_name
+FROM employee e
+LEFT JOIN city c ON e.city_id = c.city_id;
+
+-- Получите города, а также имена и фамилии сотрудников, которые в них проживают.
+-- Если в городе никто из сотрудников не живет, то вместо имени должен стоять null.
+SELECT c.city_name,
+       COALESCE(e.first_name, 'null') AS first_name,
+       COALESCE(e.last_name, 'null') AS last_name
+FROM employee e
+RIGHT JOIN city c ON c.city_id = e.city_id;
+
+-- Получите имена всех сотрудников и названия всех городов.
+-- Если в городе не живет никто из сотрудников, то вместо имени должен стоять null.
+-- Аналогично, если города для какого-то из сотрудников нет в списке, так же должен быть получен null.
+SELECT COALESCE(e.first_name, 'null') AS first_name,
+       COALESCE(e.last_name, 'null') AS last_name,
+       COALESCE(c.city_name, 'null') AS city_name
+FROM employee e
+FULL OUTER JOIN city c ON c.city_id = e.city_id;
+
+-- Получите таблицу, в которой каждому имени должен соответствовать каждый город.
+SELECT e.first_name,
+       e.last_name,
+       c.city_name
+FROM employee e
+CROSS JOIN city c
+ORDER BY e.id;
